@@ -84,11 +84,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'shine': {
+					'0%': {
+						transform: 'translateX(-100%) skewX(-12deg)'
+					},
+					'100%': {
+						transform: 'translateX(200%) skewX(-12deg)'
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'shine': 'shine 0.7s ease-in-out'
 			}
 		}
 	},
