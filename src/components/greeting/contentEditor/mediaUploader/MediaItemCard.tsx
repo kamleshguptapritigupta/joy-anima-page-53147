@@ -12,7 +12,7 @@ import { MediaItem } from "@/types/greeting";
 import { frameStyles as globalFrameStyles } from "@/components/preview/MediaFrames";
 import { motion } from "framer-motion";
 import { useToast } from "@/hooks/use-toast";
-import { uploadMediaToFirebase } from "@/utils/firebase/uploadMedia";
+import { uploadMediaToSupabase } from "@/utils/supabase/uploadMedia";
 
 interface MediaItemCardProps {
   item: MediaItem;
@@ -125,14 +125,14 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
       const uploadType = (item.type === 'gif' || item.type === 'image') ? 'image' : 'video';
       console.log('🎯 Upload type determined:', uploadType);
       
-      // Upload to Firebase Storage immediately - no blob URL
-      console.log('🚀 Starting Firebase upload...');
-      const result = await uploadMediaToFirebase(file, uploadType);
+      // Upload to Supabase Storage immediately - no blob URL
+      console.log('🚀 Starting Supabase upload...');
+      const result = await uploadMediaToSupabase(file, uploadType);
       console.log('📊 Upload result:', result);
 
       if (result.success && result.url) {
         console.log('✅ Setting media URL:', result.url);
-        // Set permanent Firebase URL
+        // Set permanent Supabase URL
         updateMedia(index, "url", result.url);
 
         toast({
