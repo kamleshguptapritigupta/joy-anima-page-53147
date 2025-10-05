@@ -9,7 +9,9 @@ import {
   fontSizeOptions, 
   fontWeightOptions, 
   colorOptions, 
-  textAlignOptions 
+  textAlignOptions,
+  textStyleOptions,
+  textDecorationOptions
 } from '@/types/textSettings';
 import { animationOptions } from '@/types/animations';
 
@@ -153,6 +155,47 @@ const TextStyleControls: React.FC<TextStyleControlsProps> = ({
                     />
                     {option.label}
                   </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Text Style and Decoration */}
+      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-2'}`}>
+        <div className="space-y-2">
+          <Label className="text-xs">Text Style</Label>
+          <Select 
+            value={textSettings.style.textStyle || 'normal'} 
+            onValueChange={(v: 'normal' | 'italic') => updateStyle('textStyle', v)}
+          >
+            <SelectTrigger className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {textStyleOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs">Text Decoration</Label>
+          <Select 
+            value={textSettings.style.textDecoration || 'none'} 
+            onValueChange={(v: 'none' | 'underline' | 'line-through') => updateStyle('textDecoration', v)}
+          >
+            <SelectTrigger className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {textDecorationOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
                 </SelectItem>
               ))}
             </SelectContent>

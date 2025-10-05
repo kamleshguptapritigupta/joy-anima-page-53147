@@ -6,6 +6,8 @@ export interface TextStyleSettings {
   color: string;
   textAlign: 'left' | 'center' | 'right';
   fontFamily?: string;
+  textStyle?: 'normal' | 'italic';
+  textDecoration?: 'none' | 'underline' | 'line-through';
 }
 
 export interface TextSettings {
@@ -72,6 +74,19 @@ export const textAlignOptions = [
   { value: 'right', label: 'Right' }
 ] as const;
 
+// Text style options (italic, normal)
+export const textStyleOptions = [
+  { value: 'normal', label: 'Normal' },
+  { value: 'italic', label: 'Italic' }
+] as const;
+
+// Text decoration options (underline, strikethrough)
+export const textDecorationOptions = [
+  { value: 'none', label: 'None' },
+  { value: 'underline', label: 'Underline' },
+  { value: 'line-through', label: 'Strikethrough' }
+] as const;
+
 // Default text settings
 export const defaultTextSettings: TextSettings = {
   id: '',
@@ -81,7 +96,9 @@ export const defaultTextSettings: TextSettings = {
     fontWeight: 'normal',
     color: 'hsl(var(--foreground))',
     textAlign: 'center',
-    fontFamily: 'inherit'
+    fontFamily: 'inherit',
+    textStyle: 'normal',
+    textDecoration: 'none'
   },
   animation: 'fadeIn'
 };

@@ -88,10 +88,19 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
     };
   }, [lastBlobUrl]);
 
-  // handle file selection and upload to Firebase
+  // handle file selection and upload to Supabase
   const handleFileSelect = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
+    const files = event.target.files;
+    if (!files || files.length === 0) return;
+
+    // Process all selected files
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      await processFileUpload(file, i);
+    }
+  };
+
+  const processFileUpload = async (file: File, fileIndex: number) => {
 
     console.log('📁 File selected:', { name: file.name, type: file.type, size: file.size });
 
@@ -156,9 +165,6 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
         variant: "destructive"
       });
     }
-
-    // clear file input
-    event.target.value = '';
   };
 
   // handle URL input change
@@ -328,6 +334,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
                   ref={fileInputRef}
                   type="file"
                   accept={item.type === 'image' ? 'image/*' : 'video/*'}
+                  multiple
                   onChange={handleFileSelect}
                   className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   onClick={() => setActive(index)}
