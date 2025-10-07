@@ -1,26 +1,42 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
-import { Type, Eye, EyeOff } from 'lucide-react';
-import { TextContent } from '@/types/greeting';
+import { UserCheck } from 'lucide-react';
 import TextStyleControls from '@/components/greeting/TextStyleControls';
 import { createTextSettings, TextSettings } from '@/types/textSettings';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Button } from '@/components/ui/button';
 
-
-interface HeaderTextCustomizerProps {
-  headerText: TextContent;
-  onChange: (headerText: TextContent) => void;
+interface ReceiverNameCustomizerProps {
+  receiverNameStyle?: TextSettings;
+  onChange: (settings: TextSettings | undefined) => void;
 }
 
-
-const HeaderTextCustomizer: React.FC<HeaderTextCustomizerProps> = ({ headerText, onChange }) => {
+const ReceiverNameCustomizer: React.FC<ReceiverNameCustomizerProps> = ({ 
+  receiverNameStyle, 
+  onChange 
+}) => {
   const [expanded, setExpanded] = useState(false);
-  const [isVisible, setIsVisible] = useState(true);
+  const [isVisible, setIsVisible] = useState(!!receiverNameStyle);
 
-  const updateHeaderText = (updates: Partial<TextContent>) => {
-    onChange({ ...headerText, ...updates });
+  const handleVisibilityChange = (checked: boolean) => {
+    setIsVisible(checked);
+    if (!checked) {
+      onChange(undefined);
+      setExpanded(false);
+    } else {
+      onChange(createTextSettings({
+        id: 'receiver-name',
+        content: '',
+        animation: 'fadeIn'
+      }));
+      setExpanded(true);
+    }
+  };
+
+  const handleSettingsChange = (updates: Partial<TextSettings>) => {
+    if (receiverNameStyle) {
+      onChange({ ...receiverNameStyle, ...updates });
+    }
   };
 
   return (
@@ -28,22 +44,20 @@ const HeaderTextCustomizer: React.FC<HeaderTextCustomizerProps> = ({ headerText,
       <CardHeader className="pb-3">
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-2 min-w-0">
-            <Type className="h-4 w-4 text-blue-500 flex-shrink-0" />
+            <UserCheck className="h-4 w-4 text-blue-500 flex-shrink-0" />
             <CardTitle className="text-sm truncate min-w-0">
-              Header Text <span className="text-gray-500">(Optional)</span>
+              Receiver Name Customization
             </CardTitle>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsVisible(!isVisible)}
-              className="h-8 gap-1"
-            >
-              {isVisible ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
-              <span className="text-xs hidden sm:inline">{isVisible ? 'Hide' : 'Show'}</span>
-            </Button>
+            <span className="text-xs text-muted-foreground hidden sm:inline">
+              {isVisible ? 'Hide' : 'Show'}
+            </span>
+            <Switch 
+              checked={isVisible} 
+              onCheckedChange={handleVisibilityChange} 
+            />
           </div>
         </div>
       </CardHeader>
@@ -66,7 +80,7 @@ const HeaderTextCustomizer: React.FC<HeaderTextCustomizerProps> = ({ headerText,
               </div>
 
               <AnimatePresence initial={false}>
-                {expanded && (
+                {expanded && receiverNameStyle && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
@@ -74,13 +88,12 @@ const HeaderTextCustomizer: React.FC<HeaderTextCustomizerProps> = ({ headerText,
                     transition={{ duration: 0.3 }}
                   >
                     <TextStyleControls
-                      textSettings={headerText as any as TextSettings}
-                      onChange={(updates) => updateHeaderText(updates as Partial<TextContent>)}
-                      showContent={true}
-                      contentPlaceholder="Enter header text (optional)"
+                      textSettings={receiverNameStyle}
+                      onChange={handleSettingsChange}
+                      showContent={false}
                       showAnimation={true}
                       compact={false}
-                      label="Header Text"
+                      label="Receiver Name Style"
                     />
                   </motion.div>
                 )}
@@ -93,4 +106,4 @@ const HeaderTextCustomizer: React.FC<HeaderTextCustomizerProps> = ({ headerText,
   );
 };
 
-export default HeaderTextCustomizer;
+export default ReceiverNameCustomizer;

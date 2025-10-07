@@ -6,8 +6,10 @@ export interface TextStyleSettings {
   color: string;
   textAlign: 'left' | 'center' | 'right';
   fontFamily?: string;
-  textStyle?: 'normal' | 'italic';
-  textDecoration?: 'none' | 'underline' | 'line-through';
+  fontStyle?: 'normal' | 'italic' | 'oblique';
+  textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize';
+  letterSpacing?: string;
+  lineHeight?: string;
 }
 
 export interface TextSettings {
@@ -74,17 +76,35 @@ export const textAlignOptions = [
   { value: 'right', label: 'Right' }
 ] as const;
 
-// Text style options (italic, normal)
-export const textStyleOptions = [
+// Font style options
+export const fontStyleOptions = [
   { value: 'normal', label: 'Normal' },
-  { value: 'italic', label: 'Italic' }
+  { value: 'italic', label: 'Italic' },
+  { value: 'oblique', label: 'Oblique' }
 ] as const;
 
-// Text decoration options (underline, strikethrough)
-export const textDecorationOptions = [
+// Text transform options
+export const textTransformOptions = [
   { value: 'none', label: 'None' },
-  { value: 'underline', label: 'Underline' },
-  { value: 'line-through', label: 'Strikethrough' }
+  { value: 'uppercase', label: 'UPPERCASE' },
+  { value: 'lowercase', label: 'lowercase' },
+  { value: 'capitalize', label: 'Capitalize' }
+] as const;
+
+// Letter spacing options
+export const letterSpacingOptions = [
+  { value: 'normal', label: 'Normal' },
+  { value: '0.05em', label: 'Tight' },
+  { value: '0.1em', label: 'Wide' },
+  { value: '0.2em', label: 'Wider' }
+] as const;
+
+// Line height options
+export const lineHeightOptions = [
+  { value: 'normal', label: 'Normal' },
+  { value: '1', label: 'Tight (1)' },
+  { value: '1.5', label: 'Normal (1.5)' },
+  { value: '2', label: 'Loose (2)' }
 ] as const;
 
 // Default text settings
@@ -97,8 +117,10 @@ export const defaultTextSettings: TextSettings = {
     color: 'hsl(var(--foreground))',
     textAlign: 'center',
     fontFamily: 'inherit',
-    textStyle: 'normal',
-    textDecoration: 'none'
+    fontStyle: 'normal',
+    textTransform: 'none',
+    letterSpacing: 'normal',
+    lineHeight: 'normal'
   },
   animation: 'fadeIn'
 };

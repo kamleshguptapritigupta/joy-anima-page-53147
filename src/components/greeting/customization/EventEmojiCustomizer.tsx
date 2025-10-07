@@ -5,11 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { Smile } from 'lucide-react';
+import { Smile, Eye, EyeOff } from 'lucide-react';
 import { EventEmojiSettings, EventType } from '@/types/greeting';
 import ElementPicker from './BorderCustomizer/ElementPicker';
 import { animationOptions } from '@/types/animations';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Button } from '@/components/ui/button';
 
 interface EventEmojiCustomizerProps {
   eventEmojiSettings: EventEmojiSettings;
@@ -22,7 +23,8 @@ const EventEmojiCustomizer: React.FC<EventEmojiCustomizerProps> = ({
   selectedEvent,
   onChange 
 }) => {
-  const [expanded, setExpanded] = useState(false); // For expand/collapse
+  const [expanded, setExpanded] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   const updateField = (field: keyof EventEmojiSettings, value: any) => {
     onChange({ ...eventEmojiSettings, [field]: value });
@@ -51,18 +53,22 @@ const EventEmojiCustomizer: React.FC<EventEmojiCustomizerProps> = ({
 
           {/* Right Section */}
           <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-muted-foreground hidden sm:inline">Show Settings</span>
-            <Switch 
-              checked={expanded} 
-              onCheckedChange={(checked) => setExpanded(checked)} 
-            />
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setIsVisible(!isVisible)}
+              className="h-8 gap-1"
+            >
+              {isVisible ? <Eye className="h-3 w-3" /> : <EyeOff className="h-3 w-3" />}
+              <span className="text-xs hidden sm:inline">{isVisible ? 'Hide' : 'Show'}</span>
+            </Button>
           </div>
         </div>
       </CardHeader>
 
       {/* Expand/Collapse with Animation */}
       <AnimatePresence initial={false}>
-        {expanded && (
+        {isVisible && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -70,6 +76,23 @@ const EventEmojiCustomizer: React.FC<EventEmojiCustomizerProps> = ({
             transition={{ duration: 0.3 }}
           >
             <CardContent className="space-y-4">
+              <div className="flex items-center justify-between pb-2">
+                <span className="text-xs text-muted-foreground">Edit Settings</span>
+                <Switch 
+                  checked={expanded} 
+                  onCheckedChange={setExpanded} 
+                />
+              </div>
+
+              <AnimatePresence initial={false}>
+                {expanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3 }}
+                    className="space-y-4"
+                  >
               {/* Emoji Selection */}
               <div className="space-y-2">
                 <Label className="text-xs font-medium">Event Emoji</Label>
@@ -164,6 +187,9 @@ const EventEmojiCustomizer: React.FC<EventEmojiCustomizerProps> = ({
                   />
                 </div>
               </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </CardContent>
           </motion.div>
         )}

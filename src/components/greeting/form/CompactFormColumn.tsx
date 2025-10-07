@@ -14,6 +14,7 @@ import EventNameCustomizer from '../customization/EventNameCustomizer';
 import EventEmojiCustomizer from '../customization/EventEmojiCustomizer';
 import FirebaseDebugger from '@/components/debug/FirebaseDebugger';
 import PublicPrivateToggle from '@/components/share/PublicPrivateToggle';
+import { TextSettings } from '@/types/textSettings';
 
 interface CompactFormColumnProps {
   formData: GreetingFormData;
@@ -35,6 +36,8 @@ interface CompactFormColumnProps {
   onEventEmojiSettingsChange?: (settings: EventEmojiSettings) => void;
   onLayoutGroupOrderChange?: (order: string[]) => void;
   onPublicToggle?: (isPublic: boolean) => void;
+  onSenderNameStyleChange?: (style: TextSettings | undefined) => void;
+  onReceiverNameStyleChange?: (style: TextSettings | undefined) => void;
 }
 
 const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
@@ -57,6 +60,8 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
   onEventEmojiSettingsChange,
   onLayoutGroupOrderChange,
   onPublicToggle,
+  onSenderNameStyleChange,
+  onReceiverNameStyleChange,
 }) => {
   const getTabBadgeCount = (tab: string) => {
     switch (tab) {
@@ -239,12 +244,16 @@ const CompactFormColumn: React.FC<CompactFormColumnProps> = ({
             animationStyle={formData.animationStyle}
             media={formData.media}
             layoutGroupOrder={formData.layoutGroupOrder}
+            senderNameStyle={formData.senderNameStyle}
+            receiverNameStyle={formData.receiverNameStyle}
             onBackgroundChange={onBackgroundChange}
             onBorderChange={onBorderChange}
             onLayoutChange={onLayoutChange}
             onAnimationChange={onAnimationChange}
             onFrameStyleChange={onFrameStyleChange}
             onLayoutGroupOrderChange={onLayoutGroupOrderChange}
+            onSenderNameStyleChange={onSenderNameStyleChange}
+            onReceiverNameStyleChange={onReceiverNameStyleChange}
           />
           
           {/* Debug Panel */}

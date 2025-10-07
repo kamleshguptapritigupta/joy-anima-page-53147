@@ -5,6 +5,9 @@ import BackgroundCustomizer from '../customization/BackgroundCustomizer/Backgrou
 import BorderCustomizer from '../customization/BorderCustomizer/BorderCustomizer';
 import LayoutSelector from '../customization/LayoutSelector';
 import EmojiSelector from '@/components/greeting/contentEditor/EmojiSelector/EmojiSelector';
+import SenderNameCustomizer from '../customization/SenderNameCustomizer';
+import ReceiverNameCustomizer from '../customization/ReceiverNameCustomizer';
+import { TextSettings } from '@/types/textSettings';
 
 interface CustomizationFormProps {
   backgroundSettings: any;
@@ -15,6 +18,8 @@ interface CustomizationFormProps {
   frameStyle: string;
   media?: any[];
   layoutGroupOrder?: string[];
+  senderNameStyle?: TextSettings;
+  receiverNameStyle?: TextSettings;
   onBackgroundChange: (settings: any) => void;
   onBorderChange: (settings: BorderSettings) => void;
   onLayoutChange: (layout: string) => void;
@@ -22,6 +27,8 @@ interface CustomizationFormProps {
   onEmojiChange: (emojis: any[]) => void;
   onFrameStyleChange: (frame: string) => void;
   onLayoutGroupOrderChange?: (order: string[]) => void;
+  onSenderNameStyleChange?: (style: TextSettings | undefined) => void;
+  onReceiverNameStyleChange?: (style: TextSettings | undefined) => void;
 }
 
 const CustomizationForm = ({
@@ -33,6 +40,8 @@ const CustomizationForm = ({
   frameStyle,
   media = [],
   layoutGroupOrder = [],
+  senderNameStyle,
+  receiverNameStyle,
   onBackgroundChange,
   onBorderChange,
   onLayoutChange,
@@ -40,10 +49,33 @@ const CustomizationForm = ({
   onEmojiChange,
   onFrameStyleChange,
   onLayoutGroupOrderChange,
+  onSenderNameStyleChange,
+  onReceiverNameStyleChange,
 }: CustomizationFormProps) => {
 
   return (
     <>
+      {/* Sender Name Customizer */}
+      {onSenderNameStyleChange && (
+        <>
+          <SenderNameCustomizer
+            senderNameStyle={senderNameStyle}
+            onChange={onSenderNameStyleChange}
+          />
+          <Separator />
+        </>
+      )}
+
+      {/* Receiver Name Customizer */}
+      {onReceiverNameStyleChange && (
+        <>
+          <ReceiverNameCustomizer
+            receiverNameStyle={receiverNameStyle}
+            onChange={onReceiverNameStyleChange}
+          />
+          <Separator />
+        </>
+      )}
 
      {/* Emoji Decorator */}
       <EmojiSelector

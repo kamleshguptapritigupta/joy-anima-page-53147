@@ -10,8 +10,10 @@ import {
   fontWeightOptions, 
   colorOptions, 
   textAlignOptions,
-  textStyleOptions,
-  textDecorationOptions
+  fontStyleOptions,
+  textTransformOptions,
+  letterSpacingOptions,
+  lineHeightOptions
 } from '@/types/textSettings';
 import { animationOptions } from '@/types/animations';
 
@@ -162,19 +164,19 @@ const TextStyleControls: React.FC<TextStyleControlsProps> = ({
         </div>
       </div>
 
-      {/* Text Style and Decoration */}
+      {/* Font Style and Text Transform */}
       <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-2'}`}>
         <div className="space-y-2">
-          <Label className="text-xs">Text Style</Label>
+          <Label className="text-xs">Font Style</Label>
           <Select 
-            value={textSettings.style.textStyle || 'normal'} 
-            onValueChange={(v: 'normal' | 'italic') => updateStyle('textStyle', v)}
+            value={textSettings.style.fontStyle || 'normal'} 
+            onValueChange={(v: 'normal' | 'italic' | 'oblique') => updateStyle('fontStyle', v)}
           >
             <SelectTrigger className="text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {textStyleOptions.map((option) => (
+              {fontStyleOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -184,16 +186,57 @@ const TextStyleControls: React.FC<TextStyleControlsProps> = ({
         </div>
 
         <div className="space-y-2">
-          <Label className="text-xs">Text Decoration</Label>
+          <Label className="text-xs">Text Transform</Label>
           <Select 
-            value={textSettings.style.textDecoration || 'none'} 
-            onValueChange={(v: 'none' | 'underline' | 'line-through') => updateStyle('textDecoration', v)}
+            value={textSettings.style.textTransform || 'none'} 
+            onValueChange={(v: 'none' | 'uppercase' | 'lowercase' | 'capitalize') => updateStyle('textTransform', v)}
           >
             <SelectTrigger className="text-xs">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {textDecorationOptions.map((option) => (
+              {textTransformOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+      </div>
+
+      {/* Letter Spacing and Line Height */}
+      <div className={`grid gap-3 ${compact ? 'grid-cols-1' : 'grid-cols-2'}`}>
+        <div className="space-y-2">
+          <Label className="text-xs">Letter Spacing</Label>
+          <Select 
+            value={textSettings.style.letterSpacing || 'normal'} 
+            onValueChange={(v) => updateStyle('letterSpacing', v)}
+          >
+            <SelectTrigger className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {letterSpacingOptions.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label className="text-xs">Line Height</Label>
+          <Select 
+            value={textSettings.style.lineHeight || 'normal'} 
+            onValueChange={(v) => updateStyle('lineHeight', v)}
+          >
+            <SelectTrigger className="text-xs">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {lineHeightOptions.map((option) => (
                 <SelectItem key={option.value} value={option.value}>
                   {option.label}
                 </SelectItem>
@@ -291,7 +334,11 @@ const TextStyleControls: React.FC<TextStyleControlsProps> = ({
               fontWeight: textSettings.style.fontWeight,
               color: textSettings.style.color,
               textAlign: textSettings.style.textAlign,
-              fontFamily: textSettings.style.fontFamily
+              fontFamily: textSettings.style.fontFamily,
+              fontStyle: textSettings.style.fontStyle,
+              textTransform: textSettings.style.textTransform,
+              letterSpacing: textSettings.style.letterSpacing,
+              lineHeight: textSettings.style.lineHeight
             }}
             className="p-2 border rounded bg-muted/20"
           >
