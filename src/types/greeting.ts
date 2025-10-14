@@ -22,6 +22,10 @@ export interface TextContent {
     color: string;
     textAlign: 'left' | 'center' | 'right';
     fontFamily?: string;
+    fontStyle?: 'normal' | 'italic' | 'oblique';
+    textTransform?: 'none' | 'uppercase' | 'lowercase' | 'capitalize';
+    letterSpacing?: string;
+    lineHeight?: string;
   };
   animation: string;
   continuousAnimation?: boolean;
@@ -75,6 +79,7 @@ export interface EventEmojiSettings {
   textAlign?: 'left' | 'center' | 'right';
   effects?: {
     glow?: boolean;
+    glowColor?: string;
     bounce?: boolean;
     rotate?: boolean;
   };

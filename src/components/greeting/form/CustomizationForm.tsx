@@ -5,14 +5,13 @@ import BackgroundCustomizer from '../customization/BackgroundCustomizer/Backgrou
 import BorderCustomizer from '../customization/BorderCustomizer/BorderCustomizer';
 import LayoutSelector from '../customization/LayoutSelector';
 import EmojiSelector from '@/components/greeting/contentEditor/EmojiSelector/EmojiSelector';
-import SenderNameCustomizer from '../customization/SenderNameCustomizer';
-import ReceiverNameCustomizer from '../customization/ReceiverNameCustomizer';
+
 import { TextSettings } from '@/types/textSettings';
 
 interface CustomizationFormProps {
   backgroundSettings: any;
   borderSettings: BorderSettings;
-  layout: string;
+  layout: string; 
   animationStyle: string;
   emojis: { id: string; emoji: string; position: { x: number; y: number }; size: number; animation: string; }[];
   frameStyle: string;
@@ -55,27 +54,7 @@ const CustomizationForm = ({
 
   return (
     <>
-      {/* Sender Name Customizer */}
-      {onSenderNameStyleChange && (
-        <>
-          <SenderNameCustomizer
-            senderNameStyle={senderNameStyle}
-            onChange={onSenderNameStyleChange}
-          />
-          <Separator />
-        </>
-      )}
-
-      {/* Receiver Name Customizer */}
-      {onReceiverNameStyleChange && (
-        <>
-          <ReceiverNameCustomizer
-            receiverNameStyle={receiverNameStyle}
-            onChange={onReceiverNameStyleChange}
-          />
-          <Separator />
-        </>
-      )}
+     
 
      {/* Emoji Decorator */}
       <EmojiSelector
