@@ -221,16 +221,80 @@ const BackgroundImageUploader: React.FC<BackgroundImageUploaderProps> = ({
                 <Link className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input 
                   type="url" 
-                  placeholder="https://example.com/image.jpg" 
+                  placeholder="https://example.com/image.jpg or paste image" 
                   value={imageUrl} 
                   onChange={(e) => setImageUrl(e.target.value)} 
+                  onPaste={async (e) => {
+                    e.preventDefault();
+                    
+                    // Try text/URL first
+                    const pastedText = e.clipboardData.getData('text/plain');
+                    if (pastedText && pastedText.trim()) {
+                      if (pastedText.startsWith('http://') || pastedText.startsWith('https://') || pastedText.startsWith('data:')) {
+                        setImageUrl(pastedText.trim());
+                        toast({
+                          title: "URL pasted!",
+                          description: "You can now click Apply."
+                        });
+                        return;
+                      }
+                    }
+                    
+                    // Try pasted image blob (mobile/desktop)
+                    const items = e.clipboardData.items;
+                    for (let i = 0; i < items.length; i++) {
+                      const item = items[i];
+                      if (item.type.startsWith('image/')) {
+                        const blob = item.getAsFile();
+                        if (blob) {
+                          setIsLoading(true);
+                          toast({
+                            title: "Uploading pasted image...",
+                            description: "Uploading to cloud storage..."
+                          });
+
+                          try {
+                            const result = await uploadMediaToSupabase(blob, 'image');
+                            if (result.success && result.url) {
+                              setImageUrl(result.url);
+                              onImageChange(result.url);
+                              toast({
+                                title: "Image uploaded!",
+                                description: "Background image has been set."
+                              });
+                            } else {
+                              toast({
+                                title: "Upload failed",
+                                description: result.error || "Failed to upload pasted image.",
+                                variant: "destructive"
+                              });
+                            }
+                          } catch (error: any) {
+                            toast({
+                              title: "Upload error",
+                              description: error.message || "Error uploading pasted image.",
+                              variant: "destructive"
+                            });
+                          } finally {
+                            setIsLoading(false);
+                          }
+                          return;
+                        }
+                      }
+                    }
+                    
+                    // Fallback
+                    if (pastedText) {
+                      setImageUrl(pastedText.trim());
+                    }
+                  }}
                   className="pl-10" 
                   showClearButton={true}
-                  onClear={() => setImageUrl("")} // <-- only clear input, not remove background
+                  onClear={() => setImageUrl("")}
                 />
               </div>
               <Button onClick={() => handleUrlApply(imageUrl)} disabled={!imageUrl.trim() || isLoading} >
-                Apply
+                {isLoading ? "Uploading..." : "Apply"}
               </Button>
             </div>
           </div>

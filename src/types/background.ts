@@ -60,6 +60,7 @@ export interface BorderElement {
   // animations include revolve now
   animation: 'float' | 'rotate-cw' | 'rotate-ccw' | 'blink' | 'pop' | 'bounce' | 'shake' | 'pulse' | 'revolve';
   rotateSpeed?: number; // seconds, used for rotate & revolve duration
+  flowDirection?: 'top-down' | 'down-top' | 'left-right' | 'right-left'; // directional flow
 }
 
 /**

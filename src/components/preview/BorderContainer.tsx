@@ -195,14 +195,27 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
       {/* Decorative Elements */}
       {borderSettings.enabled && borderSettings.decorativeElements?.map(el => {
         const isRevolve = el.animation === 'revolve';
+        const hasFlow = el.flowDirection;
         const pos = isRevolve ? revolvePositions[el.id] : nonRevolvePositions[el.id];
         
         if (!pos) return null;
 
+        let animClass = '';
+        if (hasFlow) {
+          animClass = `flow-${el.flowDirection}`;
+        } else if (!isRevolve) {
+          switch(el.animation) {
+            case 'float': animClass = 'animate-[float_3s_ease-in-out_infinite]'; break;
+            case 'blink': animClass = 'animate-[blink_1.5s_ease-in-out_infinite]'; break;
+            case 'pulse': animClass = 'animate-pulse'; break;
+            case 'bounce': animClass = 'animate-bounce'; break;
+          }
+        }
+
         const style: React.CSSProperties = {
           position: 'absolute',
-          left: pos.left,
-          top: pos.top,
+          left: hasFlow ? undefined : pos.left,
+          top: hasFlow ? undefined : pos.top,
           width: el.size || 24,
           height: el.size || 24,
           display: 'flex',
@@ -210,11 +223,12 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
           alignItems: 'center',
           pointerEvents: 'none',
           fontSize: (el.size || 24) * 0.6,
-          zIndex: 3
+          zIndex: 3,
+          animationDuration: el.rotateSpeed ? `${el.rotateSpeed}s` : undefined
         };
 
         return (
-          <div key={el.id} style={style}>
+          <div key={el.id} style={style} className={animClass}>
             {el.type === 'emoji' ? (
               <span>{el.content}</span>
             ) : (
@@ -230,6 +244,19 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
           </div>
         );
       })}
+      
+      <style>{`
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .flow-top-down { animation: flowTopDown 10s linear infinite; }
+        @keyframes flowTopDown { from { top: -5%; left: 50%; } to { top: 105%; left: 50%; } }
+        .flow-down-top { animation: flowDownTop 10s linear infinite; }
+        @keyframes flowDownTop { from { top: 105%; left: 50%; } to { top: -5%; left: 50%; } }
+        .flow-left-right { animation: flowLeftRight 10s linear infinite; }
+        @keyframes flowLeftRight { from { left: -5%; top: 50%; } to { left: 105%; top: 50%; } }
+        .flow-right-left { animation: flowRightLeft 10s linear infinite; }
+        @keyframes flowRightLeft { from { left: 105%; top: 50%; } to { left: -5%; top: 50%; } }
+      `}</style>
     </motion.div>
   );
 };

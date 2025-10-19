@@ -54,7 +54,8 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
       position: Math.round(Math.random() * 100),
       size: 28,
       animation: 'float',
-      rotateSpeed: 3
+      rotateSpeed: 3,
+      flowDirection: undefined
     };
     
     update('decorativeElements', [...(internal.decorativeElements || []), el]);
@@ -243,7 +244,8 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                   </div>
 
                   {/* Animation */}
-                  <div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
                       <Label className="text-xs">Animation</Label>
                       <Select 
                         value={el.animation} 
@@ -262,6 +264,26 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                         </SelectContent>
                       </Select>
                     </div>
+
+                    <div>
+                      <Label className="text-xs">Flow Direction</Label>
+                      <Select 
+                        value={el.flowDirection || 'none'} 
+                        onValueChange={(v) => updateElement(el.id, 'flowDirection', v === 'none' ? undefined : v)}
+                      >
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="none">None</SelectItem>
+                          <SelectItem value="top-down">Top → Down</SelectItem>
+                          <SelectItem value="down-top">Down → Top</SelectItem>
+                          <SelectItem value="left-right">Left → Right</SelectItem>
+                          <SelectItem value="right-left">Right → Left</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
 
                   {/* Second Line: Position, Size, speed */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">

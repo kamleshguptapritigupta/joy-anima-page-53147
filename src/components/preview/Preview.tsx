@@ -9,6 +9,7 @@ import GreetingTexts from './GreetingTexts';
 import EnhancedMediaGallery from './EnhancedMediaGallery';
 import SenderSection from './SenderSection';
 import AudioAutoPlay from './AudioAutoPlay';
+import ShareNameInput from './ShareNameInput';
 import { cn } from '@/lib/utils';
 
 interface PreviewProps {
@@ -31,39 +32,39 @@ const Preview = ({
 
   // Default view mode
   return (
-    <BackgroundWrapper greetingData={greetingData} className={cn('preview-theme-static', className)}>
-        <BorderContainer
-          greetingData={greetingData}
-          selectedEvent={selectedEvent}
-        >
-          <div className="space-y-8">
-            <EventHeader
-              greetingData={greetingData}
-              selectedEvent={selectedEvent}
-            />
-            <GreetingTexts greetingData={greetingData} />
-            <EnhancedMediaGallery
-              greetingData={greetingData}
-              frameStyle={frameStyle || greetingData.frameStyle}
-              mediaAnimation={mediaAnimation || greetingData.mediaAnimation}
-            />
-            <SenderSection greetingData={greetingData} />
-            {/* <ShareActions
-              greetingData={greetingData}
-              greetingRef={greetingRef}
-              selectedEvent={selectedEvent}
-            /> */}
-          </div>
-        </BorderContainer>
+    <>
+      <BackgroundWrapper greetingData={greetingData} className={cn('preview-theme-static pb-28', className)}>
+          <BorderContainer
+            greetingData={greetingData}
+            selectedEvent={selectedEvent}
+          >
+            <div className="space-y-8">
+              <EventHeader
+                greetingData={greetingData}
+                selectedEvent={selectedEvent}
+              />
+              <GreetingTexts greetingData={greetingData} />
+              <EnhancedMediaGallery
+                greetingData={greetingData}
+                frameStyle={frameStyle || greetingData.frameStyle}
+                mediaAnimation={mediaAnimation || greetingData.mediaAnimation}
+              />
+              <SenderSection greetingData={greetingData} />
+            </div>
+          </BorderContainer>
 
-        <EmojisLayer emojis={greetingData.emojis} />
+          <EmojisLayer emojis={greetingData.emojis} />
 
-        {/* Auto-playing audio for shared greetings */}
-        <AudioAutoPlay 
-          audioUrl={greetingData.audioUrl} 
-          autoPlay={true}
-        />
-    </BackgroundWrapper>
+          {/* Auto-playing audio for shared greetings */}
+          <AudioAutoPlay 
+            audioUrl={greetingData.audioUrl} 
+            autoPlay={true}
+          />
+      </BackgroundWrapper>
+
+      {/* Share Name Input - Fixed at Bottom */}
+      <ShareNameInput />
+    </>
   );
 };
 
