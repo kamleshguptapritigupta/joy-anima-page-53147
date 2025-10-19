@@ -162,12 +162,12 @@ const TextStyleControls: React.FC<TextStyleControlsProps> = ({
 
             <div className="space-y-2">
               <Label className="text-xs">Text Color</Label>
-              <div className="flex items-center gap-2">
+              <div className="grid grid-cols-[auto,1fr] items-center gap-2">
                 <Input
                   type="color"
                   value={textSettings?.style?.color?.startsWith("hsl") ? "#333333" : textSettings?.style?.color}
                   onChange={(e) => updateStyle("color", e.target.value)}
-                  className="w-10 h-9 p-1 cursor-pointer"
+                  className="w-10 p-1 cursor-pointer"
                 />
                 <Select value={textSettings?.style?.color} onValueChange={(v) => updateStyle("color", v)}>
                   <SelectTrigger className="text-xs">

@@ -229,7 +229,7 @@ const BackgroundImageUploader: React.FC<BackgroundImageUploaderProps> = ({
                   onClear={() => setImageUrl("")} // <-- only clear input, not remove background
                 />
               </div>
-              <Button onClick={() => handleUrlApply(imageUrl)} disabled={!imageUrl.trim() || isLoading} size="sm">
+              <Button onClick={() => handleUrlApply(imageUrl)} disabled={!imageUrl.trim() || isLoading} >
                 Apply
               </Button>
             </div>

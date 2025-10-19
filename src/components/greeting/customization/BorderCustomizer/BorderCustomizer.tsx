@@ -105,7 +105,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                       <SelectItem value="double">Double</SelectItem>
                     </SelectContent>
                   </Select>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 md:gap-4">
                  
                   <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-3">
@@ -139,7 +139,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                         type="color" 
                         value={internal.primaryColor} 
                         onChange={(e) => update('primaryColor', e.target.value)} 
-                        className="w-full"
+                        className="w-1/2"
                       />
                     </div>
                     <div className="flex-1">
@@ -148,7 +148,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                         type="color" 
                         value={internal.secondaryColor || ''} 
                         onChange={(e) => update('secondaryColor', e.target.value)} 
-                        className="w-full"
+                        className="w-1/2"
                       />
                     </div>
                   </div>
@@ -204,7 +204,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
               {(internal.decorativeElements || []).map((el: any) => (
                 <div key={el.id} className="border rounded-md p-3 space-y-3">
                   {/* First Line: Type, Content, Delete */}
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 gap-2 sm:gap-4">
                     <Select 
                       value={el.type} 
                       onValueChange={(v) => updateElement(el.id, 'type', v)}
@@ -217,24 +217,25 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                         <SelectItem value="image">Image</SelectItem>
                       </SelectContent>
                     </Select>
-<div className="flex items-center gap-2">
+<div className="flex items-center">
                     <Input 
                       value={el.content} 
                       onChange={(e) => updateElement(el.id, 'content', e.target.value)} 
                       placeholder={el.type === 'emoji' ? 'Enter emoji' : 'Image URL'} 
                       className="flex-1"
                     />
-
+</div>
+<div className="flex items-center gap-2 justify-end">
                     <ElementPicker 
                       type={el.type} 
                       onSelect={(v) => updateElement(el.id, 'content', v)} 
                     />
 
                     <Button 
-                      size="sm" 
+                      
                       variant="destructive" 
                       onClick={() => removeElement(el.id)} 
-                      className="h-8 w-8 p-0"
+                      className=" w-10 p-0"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

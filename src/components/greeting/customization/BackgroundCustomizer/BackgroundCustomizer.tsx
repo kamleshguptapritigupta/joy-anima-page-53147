@@ -135,12 +135,12 @@ const BackgroundCustomizer = ({ settings, onChange }: BackgroundCustomizerProps)
               {/* Base Color */}
               <div className="space-y-2">
                 <Label>Base Color</Label>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-[auto,1fr] items-center gap-2">
                   <Input
                     type="color"
                     value={settings.color}
                     onChange={(e) => onChange({ ...settings, color: e.target.value })}
-                    className="w-12 h-12 rounded-lg cursor-pointer"
+                    className="w-10 p-1 rounded-lg cursor-pointer"
                   />
                   <Input
                     value={settings.color}
@@ -169,8 +169,8 @@ const BackgroundCustomizer = ({ settings, onChange }: BackgroundCustomizerProps)
                       transition={{ duration: 0.18 }}
                       className="space-y-3 ml-4 pl-4 border-l"
                     >
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-2 sm:gap-4">
+                     <div className="grid grid-cols-2 items-center gap-4">
+                        <div className="flex items-center gap-2 ">
                           <div className="space-y-1">
                             <Label className="text-xs">Start</Label>
                             <Input
@@ -179,7 +179,7 @@ const BackgroundCustomizer = ({ settings, onChange }: BackgroundCustomizerProps)
                               onChange={(e) =>
                                 merge("gradient", { colors: [e.target.value, settings.gradient.colors[1]] })
                               }
-                              className="w-10 h-10 rounded-lg"
+                              className="w-10 p-1 rounded-lg"
                             />
                           </div>
                           <div className="space-y-1">
@@ -190,14 +190,14 @@ const BackgroundCustomizer = ({ settings, onChange }: BackgroundCustomizerProps)
                               onChange={(e) =>
                                 merge("gradient", { colors: [settings.gradient.colors[0], e.target.value] })
                               }
-                              className="w-10 h-10 rounded-lg"
+                              className="w-10 p-1 rounded-lg"
                             />
                           </div>
                         </div>
-                        <div>
+                        <div className="space-y-1">
                           <Label className="text-xs">Direction</Label>
                           <Select value={settings.gradient.direction} onValueChange={(direction) => merge("gradient", { direction })}>
-                            <SelectTrigger className="h-9">
+                            <SelectTrigger className="">
                               <SelectValue placeholder="Select direction" />
                             </SelectTrigger>
                             <SelectContent>
