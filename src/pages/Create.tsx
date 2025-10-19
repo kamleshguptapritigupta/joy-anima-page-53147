@@ -10,6 +10,10 @@ import PreviewModal from "./create/PreviewModal";
 import { useLocation, useSearchParams } from "react-router-dom";
 import { useFirebaseGreetings } from "@/hooks/useFirebaseGreetings";
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
+import BeautifulGreetingsText from '../components/landingPage/BeautifulGreetingsText'
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 const CreatePage: React.FC = () => {
   const {
@@ -57,22 +61,41 @@ const CreatePage: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-br from-primary/10 via-background to-secondary/20 py-2">
-      <div className="flex justify-between items-center w-full mt-4 px-4">
-        <BackButton to="/" className="bg-background/80 backdrop-blur">
-          Back to Home
-        </BackButton>
+      <div className="flex justify-between items-center max-w-6xl mx-auto mt-4 px-1 lg:px-0">
+
+                {/* Back Button */}
+                        <Link to="/">
+                          <Button variant="outline" className=" bg-white group hover:border-primary">
+                            <span className="mr-2 group-hover:animate-bounce">←</span>
+                            Back to Home
+                          </Button>
+                        </Link>
 
         <LanguageSelector />
       </div>
 
       <div className="max-w-6xl mx-auto pt-16">
         <div className="text-center mb-8 animate-fade-in">
-          <h1 className="text-2xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-pink-500 to-violet-500 hover:bg-gradient-to-l bg-clip-text text-transparent animate-bounce">
-            ✨ {translate('Create Your Greeting')}
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground font-medium animate-typing overflow-hidden border-r-4 border-r-primary">
-            Design a beautiful, personalized greeting to share with someone special
-          </p>
+           <motion.div
+  initial={{ opacity: 0, y: -20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.5, ease: "easeOut" }}
+  className="text-center mb-4 animate-fade-in animate-bounce"
+>
+      
+          <BeautifulGreetingsText text= {translate('Create Your Greeting')} />
+           </motion.div>
+
+      {/* Greeting Text */}
+      <motion.p
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 200 }}
+        className="text-muted-foreground text-lg md:text-xl font-semibold hover:text-primary transition-colors duration-300"
+      >
+       ✨ Design a beautiful, personalized greeting to share with someone special ✨
+      </motion.p>
+         
         </div>
  
         <div className="grid lg:grid-cols-2 gap-8">

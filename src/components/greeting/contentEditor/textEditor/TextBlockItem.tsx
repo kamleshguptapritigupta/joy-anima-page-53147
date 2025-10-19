@@ -46,38 +46,69 @@ export default function TextBlockItem({ text, index, isActive, onRemove, onMove,
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 pb-3">
-        <Textarea
-          value={text.content}
-          onChange={(e) => onUpdate({ content: e.target.value })}
-          placeholder="Enter your message here..."
-          rows={2}
-          className="text-sm min-h-[80px] w-full resize-none overflow-auto break-words whitespace-pre-wrap [text-wrap:pretty] hyphens-auto"
-        />
-        {isActive && (
-          <TextStyleControls
-            textSettings={createTextSettings({
-              id: text.id,
-              content: text.content,
-              style: text.style,
-              animation: text.animation,
-              continuousAnimation: text.continuousAnimation
-            })}
-            onChange={(settings) => {
-              const updates: Partial<TextContent> = {};
-              if (settings.content !== undefined) updates.content = settings.content;
-              if (settings.style) updates.style = settings.style;
-              if (settings.animation !== undefined) updates.animation = settings.animation;
-              if (settings.continuousAnimation !== undefined) updates.continuousAnimation = settings.continuousAnimation;
-              onUpdate(updates);
-            }}
-            showContent={false}
-            showAnimation={true}
-            compact={true}
-            label="Text Styling"
-          />
-        )}
-      </CardContent>
+    <CardContent className="space-y-3 pb-3">
+  {/* Textarea Wrapper */}
+  <div className="relative">
+    <Textarea
+      value={text.content}
+      onChange={(e) => onUpdate({ content: e.target.value })}
+      placeholder="Enter your message here..."
+      rows={2}
+      className="text-sm min-h-[80px] w-full resize-none overflow-auto break-words whitespace-pre-wrap [text-wrap:pretty] hyphens-auto pr-8"
+    />
+
+    {text.content && (
+      <Button
+        size="sm"
+        variant="ghost"
+        onClick={() => onUpdate({ content: '' })}
+        className="absolute right-2 top-2 h-5 w-5 p-0 hover:bg-muted/50 rounded-full"
+      >
+        <span className="sr-only">Clear</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="14"
+          height="14"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </Button>
+    )}
+  </div>
+
+  {isActive && (
+    <TextStyleControls
+      textSettings={createTextSettings({
+        id: text.id,
+        content: text.content,
+        style: text.style,
+        animation: text.animation,
+        continuousAnimation: text.continuousAnimation
+      })}
+      onChange={(settings) => {
+        const updates: Partial<TextContent> = {};
+        if (settings.content !== undefined) updates.content = settings.content;
+        if (settings.style) updates.style = settings.style;
+        if (settings.animation !== undefined) updates.animation = settings.animation;
+        if (settings.continuousAnimation !== undefined)
+          updates.continuousAnimation = settings.continuousAnimation;
+        onUpdate(updates);
+      }}
+      showContent={false}
+      showAnimation={true}
+      compact={false}
+      label="Text Styling"
+    />
+  )}
+</CardContent>
+
     </Card>
   );
 }

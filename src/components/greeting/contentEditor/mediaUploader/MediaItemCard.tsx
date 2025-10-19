@@ -222,45 +222,108 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
         {/* Input Mode Toggle & Controls */}
         <div className="space-y-3">
           {/* Mode Toggle Buttons */}
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant={inputMode === 'url' ? 'default' : 'outline'}
-              onClick={() => setInputMode('url')}
-              className="flex-1 gap-2 h-8"
-            >
-              <Link className="h-3.5 w-3.5" />
-              <span className="text-xs">URL</span>
-            </Button>
-            <Button
-              size="sm"
-              variant={inputMode === 'file' ? 'default' : 'outline'}
-              onClick={() => setInputMode('file')}
-              className="flex-1 gap-2 h-8"
-            >
-              <Upload className="h-3.5 w-3.5" />
-              <span className="text-xs">Upload</span>
-            </Button>
-            {item.url && (
-               <div>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleClearMedia}
-                className="h-8 px-2"
-              >
-                <X className="h-3.5 w-3.5" />
-              </Button>
+      
+<div className="flex items-center gap-2 flex-wrap">
+      {/* --- URL Button --- */}
+      <Button
+        size="sm"
+        variant={inputMode === "url" ? "default" : "outline"}
+        onClick={() => setInputMode("url")}
+        className="flex-1 gap-2 transition-all hover:border-primary hover:text-primary"
+      >
+        <Link className="h-3.5 w-3.5" />
+        <span className="text-xs">URL</span>
+      </Button>
 
-  <div className="absolute bg-white/50 right-3 flex gap-0 sm:gap-1 z-10 rounded-xl shadow-xl">
+      {/* --- Upload Button --- */}
+      <Button
+        size="sm"
+        variant={inputMode === "file" ? "default" : "outline"}
+        onClick={() => setInputMode("file")}
+        className="flex-1 gap-2 transition-all hover:border-primary hover:text-primary"
+      >
+        <Upload className="h-3.5 w-3.5" />
+        <span className="text-xs">Upload</span>
+      </Button>
+
+      {/* --- When media is uploaded --- */}
+      {item.url && (
+        <div className="flex items-center gap-2">
+          {/* --- Edit / Hide + Settings Toggle --- */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                size="sm"
+                  variant="outline"
+                  onClick={() => setShowSettings((s) => !s)}
+                  aria-label={showSettings ? "Hide Settings" : "Edit Settings"}
+                  className="rounded-md border text-green-500 hover:text-primary hover:border-primary transition-all flex items-center gap-1"
+                >
+                  {showSettings ? (
+                    <>
+                      {/* <EyeOff className="w-4 h-4" /> */}
+                      <Settings className="w-4 h-4" />
+                    </>
+                  ) : (
+                    <>
+                      {/* <Edit3 className="w-4 h-4" /> */}
+                      <Settings className="w-4 h-4" />
+                    </>
+                  )}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                {showSettings ? "Hide Settings" : "Edit Settings"}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* --- Cancel --- */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                size="sm"
+                  variant="outline"
+                  onClick={handleClearMedia}
+                  aria-label="Cancel"
+                  className="rounded-md border text-red-500 hover:text-primary hover:border-primary transition-all"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Cancel</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* --- Delete --- */}
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                 size="sm"
+                  variant="outline"
+                  onClick={() => removeMedia(index)}
+                  aria-label="Delete"
+                  className="rounded-md border text-red-500 hover:text-primary hover:border-primary transition-all"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          {/* --- Move Up --- */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
-                  className="p-2"
                   onClick={() => moveMediaPriority(index, "up")}
                   disabled={item.priority === 1}
                   aria-label="Move up"
+                  className="p-2 rounded-md border border-transparent text-yellow-500 hover:text-primary hover:border-primary transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   <ArrowUp className="w-4 h-4" />
                 </button>
@@ -269,42 +332,24 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
             </Tooltip>
           </TooltipProvider>
 
+          {/* --- Move Down --- */}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <button className="p-2" onClick={() => moveMediaPriority(index, "down")} aria-label="Move down">
+                <button
+                  onClick={() => moveMediaPriority(index, "down")}
+                  aria-label="Move down"
+                  className="p-2 rounded-md border border-transparent text-yellow-500 hover:text-primary hover:border-primary transition-all"
+                >
                   <ArrowDown className="w-4 h-4" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>Move Down</TooltipContent>
             </Tooltip>
           </TooltipProvider>
-
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button className="p-2" onClick={() => setShowSettings((s) => !s)} aria-label="Settings">
-                  <Settings className="w-4 h-4" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>Settings</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-</div>
-          
-        </div> 
-            )}
-            <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button className="text-red-500 flex-1 gap-2 h-8" variant='outline' onClick={() => removeMedia(index)} aria-label="Delete">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          </div>
+        </div>
+      )}
+    </div>
 
           {/* URL Input Mode */}
           {inputMode === 'url' && (
