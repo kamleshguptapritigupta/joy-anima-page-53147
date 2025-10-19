@@ -154,6 +154,25 @@ const AdvancedMediaUploader = ({ media, onChange, maxItems = MAX_ITEMS }: Advanc
     }
   };
 
+  // Add multiple media items (for multi-file upload)
+  const addMultipleMedia = (items: MediaItem[]) => {
+    if (media.length + items.length > maxItems) {
+      return; // Don't exceed max items
+    }
+    
+    const newMedia = items.map((item, idx) => ({
+      ...item,
+      priority: media.length + idx + 1,
+    }));
+    
+    const updated = [...media, ...newMedia];
+    onChange(updated);
+    
+    // Clear blank tracking since we're adding real items
+    setBlankIndex(null);
+    setBlankType(null);
+  };
+
   const moveMediaPriority = (index: number, direction: "up" | "down") => {
     const newMedia = [...media];
     const currentPriority = newMedia[index].priority;
@@ -216,6 +235,7 @@ const AdvancedMediaUploader = ({ media, onChange, maxItems = MAX_ITEMS }: Advanc
             setActiveMediaIndex={setActiveMediaIndex}
             removeMedia={removeMedia}
             updateMedia={updateMedia}
+            addMultipleMedia={addMultipleMedia}
             moveMediaPriority={moveMediaPriority}
             handleDragStart={handleDragStart}
             handleDragOver={handleDragOver}

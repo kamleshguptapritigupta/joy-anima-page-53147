@@ -1,7 +1,6 @@
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
-import { ThemeProvider } from "@/components/theme/ThemeProvider";
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -28,17 +27,16 @@ const NotFoundPage = () => {
   };
 
   return (
-    <ThemeProvider>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.6 }}
-        className="
-          min-h-screen flex items-center justify-center relative overflow-hidden
-          bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100
-          dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e]
-        "
-      >
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.6 }}
+      className="
+        min-h-screen flex items-center justify-center relative overflow-hidden
+        bg-gradient-to-br from-indigo-100 via-purple-50 to-pink-100
+        dark:from-[#0f0c29] dark:via-[#302b63] dark:to-[#24243e]
+      "
+    >
         {/* Animated gradient background */}
         <motion.div
           className="absolute inset-0 opacity-40"
@@ -208,8 +206,7 @@ const NotFoundPage = () => {
             />
           ))}
         </motion.div>
-      </motion.div>
-    </ThemeProvider>
+    </motion.div>
   );
 };
 

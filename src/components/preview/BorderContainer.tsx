@@ -195,15 +195,21 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
       {/* Decorative Elements */}
       {borderSettings.enabled && borderSettings.decorativeElements?.map(el => {
         const isRevolve = el.animation === 'revolve';
+        const isTravel = el.animation === 'travel';
         const hasFlow = el.flowDirection;
         const pos = isRevolve ? revolvePositions[el.id] : nonRevolvePositions[el.id];
         
-        if (!pos) return null;
+        if (!pos && !isTravel) return null;
 
         let animClass = '';
-        if (hasFlow) {
+        if (isTravel && hasFlow) {
+          // Travel animation with direction
+          animClass = `travel-${el.flowDirection}`;
+        } else if (hasFlow && !isTravel && !isRevolve) {
+          // Legacy flow animation
           animClass = `flow-${el.flowDirection}`;
-        } else if (!isRevolve) {
+        } else if (!isRevolve && !isTravel) {
+          // Static animations
           switch(el.animation) {
             case 'float': animClass = 'animate-[float_3s_ease-in-out_infinite]'; break;
             case 'blink': animClass = 'animate-[blink_1.5s_ease-in-out_infinite]'; break;
@@ -214,8 +220,8 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
 
         const style: React.CSSProperties = {
           position: 'absolute',
-          left: hasFlow ? undefined : pos.left,
-          top: hasFlow ? undefined : pos.top,
+          left: isTravel ? undefined : (hasFlow ? undefined : pos?.left),
+          top: isTravel ? undefined : (hasFlow ? undefined : pos?.top),
           width: el.size || 24,
           height: el.size || 24,
           display: 'flex',
@@ -224,7 +230,9 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
           pointerEvents: 'none',
           fontSize: (el.size || 24) * 0.6,
           zIndex: 3,
-          animationDuration: el.rotateSpeed ? `${el.rotateSpeed}s` : undefined
+          animationDuration: el.rotateSpeed ? `${el.rotateSpeed}s` : undefined,
+          // @ts-ignore - CSS custom property
+          '--animation-duration': el.rotateSpeed ? `${el.rotateSpeed}s` : '8s'
         };
 
         return (
@@ -248,6 +256,8 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
       <style>{`
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        
+        /* Legacy flow animations (deprecated, use travel instead) */
         .flow-top-down { animation: flowTopDown 10s linear infinite; }
         @keyframes flowTopDown { from { top: -5%; left: 50%; } to { top: 105%; left: 50%; } }
         .flow-down-top { animation: flowDownTop 10s linear infinite; }
@@ -256,6 +266,28 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
         @keyframes flowLeftRight { from { left: -5%; top: 50%; } to { left: 105%; top: 50%; } }
         .flow-right-left { animation: flowRightLeft 10s linear infinite; }
         @keyframes flowRightLeft { from { left: 105%; top: 50%; } to { left: -5%; top: 50%; } }
+        
+        /* Travel animations - continuous movement from edge to edge */
+        .travel-top-down { animation: travelTopDown var(--animation-duration, 8s) linear infinite; }
+        @keyframes travelTopDown { 
+          from { top: -10%; left: 50%; transform: translate(-50%, 0); } 
+          to { top: 110%; left: 50%; transform: translate(-50%, 0); } 
+        }
+        .travel-down-top { animation: travelDownTop var(--animation-duration, 8s) linear infinite; }
+        @keyframes travelDownTop { 
+          from { top: 110%; left: 50%; transform: translate(-50%, 0); } 
+          to { top: -10%; left: 50%; transform: translate(-50%, 0); } 
+        }
+        .travel-left-right { animation: travelLeftRight var(--animation-duration, 8s) linear infinite; }
+        @keyframes travelLeftRight { 
+          from { left: -10%; top: 50%; transform: translate(0, -50%); } 
+          to { left: 110%; top: 50%; transform: translate(0, -50%); } 
+        }
+        .travel-right-left { animation: travelRightLeft var(--animation-duration, 8s) linear infinite; }
+        @keyframes travelRightLeft { 
+          from { left: 110%; top: 50%; transform: translate(0, -50%); } 
+          to { left: -10%; top: 50%; transform: translate(0, -50%); } 
+        }
       `}</style>
     </motion.div>
   );

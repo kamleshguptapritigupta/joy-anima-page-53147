@@ -245,7 +245,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
 
                   {/* Animation */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
+                  <div>
                       <Label className="text-xs">Animation</Label>
                       <Select 
                         value={el.animation} 
@@ -261,28 +261,30 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                           <SelectItem value="bounce">Bounce</SelectItem>
                           <SelectItem value="shake">Shake</SelectItem>
                           <SelectItem value="revolve">Revolve (around border)</SelectItem>
+                          <SelectItem value="travel">Travel</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
 
-                    <div>
-                      <Label className="text-xs">Flow Direction</Label>
-                      <Select 
-                        value={el.flowDirection || 'none'} 
-                        onValueChange={(v) => updateElement(el.id, 'flowDirection', v === 'none' ? undefined : v)}
-                      >
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="none">None</SelectItem>
-                          <SelectItem value="top-down">Top → Down</SelectItem>
-                          <SelectItem value="down-top">Down → Top</SelectItem>
-                          <SelectItem value="left-right">Left → Right</SelectItem>
-                          <SelectItem value="right-left">Right → Left</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                    {el.animation === 'travel' && (
+                      <div>
+                        <Label className="text-xs">Travel Direction</Label>
+                        <Select 
+                          value={el.flowDirection || 'top-down'} 
+                          onValueChange={(v) => updateElement(el.id, 'flowDirection', v)}
+                        >
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="top-down">Top → Down</SelectItem>
+                            <SelectItem value="down-top">Down → Top</SelectItem>
+                            <SelectItem value="left-right">Left → Right</SelectItem>
+                            <SelectItem value="right-left">Right → Left</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                   </div>
 
                   {/* Second Line: Position, Size, speed */}

@@ -9,6 +9,7 @@ interface MediaListProps {
   setActiveMediaIndex: (index: number | null) => void;
   removeMedia: (index: number) => void;
   updateMedia: (index: number, field: keyof MediaItem, value: any) => void;
+  addMultipleMedia: (items: MediaItem[]) => void;
   moveMediaPriority: (index: number, direction: "up" | "down") => void;
   handleDragStart: (index: number) => void;
   handleDragOver: (e: React.DragEvent<HTMLDivElement>, index: number) => void;
@@ -24,6 +25,7 @@ const MediaList = ({
   setActiveMediaIndex,
   removeMedia,
   updateMedia,
+  addMultipleMedia,
   moveMediaPriority,
   handleDragStart,
   handleDragOver,
@@ -64,6 +66,7 @@ const MediaList = ({
             setActive={(i) => setActiveMediaIndex(i)}
             removeMedia={removeMedia}
             updateMedia={updateMedia}
+            addMultipleMedia={addMultipleMedia}
             moveMediaPriority={moveMediaPriority}
             handleDragStart={handleDragStart}
             handleDragOver={handleDragOver}

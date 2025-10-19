@@ -21,6 +21,7 @@ interface MediaItemCardProps {
   active: boolean;
   setActive: (index: number | null) => void;
   updateMedia: (index: number, field: keyof MediaItem, value: any) => void;
+  addMultipleMedia: (items: MediaItem[]) => void;
   removeMedia: (index: number) => void;
   moveMediaPriority: (index: number, direction: "up" | "down") => void;
   handleDragStart: (index: number) => void;
@@ -39,6 +40,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
   media,
   setActive,
   updateMedia,
+  addMultipleMedia,
   removeMedia,
   moveMediaPriority,
   handleDragStart,
@@ -120,7 +122,7 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
     // Show loading toast
     toast({
       title: "Uploading...",
-      description: `Uploading ${item.type} to cloud storage...`
+      description: `Uploading ${item.type} ${fileIndex > 0 ? `(${fileIndex + 1})` : ''} to cloud storage...`
     });
 
     // cleanup previous blob URL
@@ -141,8 +143,22 @@ const MediaItemCard: React.FC<MediaItemCardProps> = ({
 
       if (result.success && result.url) {
         console.log('✅ Setting media URL:', result.url);
-        // Set permanent Supabase URL
-        updateMedia(index, "url", result.url);
+        
+        // First file - update current item
+        if (fileIndex === 0) {
+          updateMedia(index, "url", result.url);
+        } else {
+          // Additional files - create new media items
+          const newItem: MediaItem = {
+            id: `${Date.now()}_${fileIndex}`,
+            url: result.url,
+            type: item.type,
+            position: { width: 300, height: 200 },
+            animation: "fade",
+            priority: media.length + 1,
+          };
+          addMultipleMedia([newItem]);
+        }
 
         toast({
           title: "Upload successful!",
