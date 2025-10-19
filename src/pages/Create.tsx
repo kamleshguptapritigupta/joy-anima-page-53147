@@ -14,8 +14,9 @@ import BeautifulGreetingsText from '../components/landingPage/BeautifulGreetings
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { Home } from "lucide-react";
 
-const CreatePage: React.FC = () => {
+const CreatePage: React.FC = ({ onClick }: { onClick?: () => void }) => {
   const {
     formData,
     selectedEvent,
@@ -61,14 +62,56 @@ const CreatePage: React.FC = () => {
 
   return (
     <div className="bg-gradient-to-br from-primary/10 via-background to-secondary/20 py-2">
-      <div className="flex justify-between items-center max-w-6xl mx-auto mt-4 px-1 lg:px-0">
+      <div className="flex justify-between items-center max-w-6xl mx-auto mt-4 px-2 lg:px-0">
 
                 {/* Back Button */}
                         <Link to="/">
-                          <Button variant="outline" className=" bg-white group hover:border-primary">
-                            <span className="mr-2 group-hover:animate-bounce">←</span>
-                            Back to Home
-                          </Button>
+                         <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0 0 25px rgba(168, 85, 247, 0.4)",
+      }}
+      whileTap={{ scale: 0.97 }}
+      className="inline-block"
+    >
+      <Button
+        variant="outline"
+        onClick={onClick}
+        className="
+          relative overflow-hidden
+          bg-white/70 dark:bg-gray-900/70
+          backdrop-blur-md
+          text-gray-900 dark:text-gray-100
+          border border-gray-200/60 dark:border-gray-700/60
+          hover:border-primary hover:text-primary
+          transition-all duration-300
+          flex items-center gap-2 group
+        "
+      >
+        {/* subtle shine on hover */}
+        <motion.span
+          initial={{ x: "-120%" }}
+          whileHover={{ x: "120%" }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-white/10 -skew-x-12"
+        />
+
+        <motion.span
+          animate={{ x: [0, -5, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="flex items-center"
+        >
+          {/* <Home className="h-4 w-4 mr-1 group-hover:animate-bounce" /> */}
+          <span className="mr-2 group-hover:animate-bounce">←</span>
+        </motion.span>
+
+        <span className="relative z-10">Back to Home</span>
+      </Button>
+    </motion.div>
+
                         </Link>
 
         <LanguageSelector />

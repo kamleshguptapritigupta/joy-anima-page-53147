@@ -5,16 +5,18 @@ import { useFirebaseGreetings } from '@/hooks/useFirebaseGreetings';
 import { GreetingFormData } from '@/types/greeting';
 import Preview from '@/components/preview/Preview';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Share2, Edit3 } from 'lucide-react';
+import { ArrowLeft, Share2, Edit3, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ShareActions from '@/components/share/ShareActions';
 import { FloatingButton } from '@/components/share/CustomizeAndShare';
 import SEOManager from '@/components/seo/SEOManager';
 import BackgroundAudioPlayer from '@/components/greeting/contentEditor/AudioPlayerInput/BackgroundAudioPlayer';
 import AudioAutoPlay from '@/components/preview/AudioAutoPlay';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import NotFoundPage from "./NotFound"
 
-
-const ViewGreeting: React.FC = () => {
+const ViewGreeting: React.FC = ({ onClick }: { onClick?: () => void }) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { loadGreeting, isLoading: hookLoading } = useFirebaseGreetings();
@@ -90,19 +92,7 @@ const ViewGreeting: React.FC = () => {
   if (error || !greetingData) {
     console.log('❌ ViewGreeting: error state or empty data', { error, hasData: !!greetingData });
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/20">
-        <div className="text-center max-w-md mx-auto p-6">
-          <div className="text-6xl mb-4">😕</div>
-          <h1 className="text-2xl font-bold mb-2">Greeting Not Found</h1>
-          <p className="text-muted-foreground mb-6">
-            {error || 'The greeting you\'re looking for doesn\'t exist or has been removed.'}
-          </p>
-          <Button onClick={() => navigate('/')} className="gap-2">
-            <ArrowLeft className="h-4 w-4" />
-            Go Home
-          </Button>
-        </div>
-      </div>
+      < NotFoundPage />
     );
   }
 
@@ -136,10 +126,59 @@ const ViewGreeting: React.FC = () => {
       {/* Header */}
       <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b">
         <div className="mr-2 sm:mx-4 px-2 sm:px-4 py-3 flex items-center justify-between">
-          <Button variant="ghost" onClick={() => navigate('/')} className="gap-2">
+          {/* <Button variant="ghost" onClick={() => navigate('/')} className="gap-2">
             <ArrowLeft className="h-4 w-4 animate-bounce" />
             Home
-          </Button>
+          </Button> */}
+              {/* Back Button */}
+                        <Link to="/">
+                         <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      whileHover={{
+        scale: 1.05,
+        boxShadow: "0 0 25px rgba(168, 85, 247, 0.4)",
+      }}
+      whileTap={{ scale: 0.97 }}
+      className="inline-block"
+    >
+      <Button
+        variant="outline"
+        onClick={onClick}
+        className="
+          relative overflow-hidden
+          bg-white/70 dark:bg-gray-900/70
+          backdrop-blur-md
+          text-gray-900 dark:text-gray-100
+          border border-gray-200/60 dark:border-gray-700/60
+          hover:border-primary hover:text-primary
+          transition-all duration-300
+          flex items-center gap-2 group
+        "
+      >
+        {/* subtle shine on hover */}
+        <motion.span
+          initial={{ x: "-120%" }}
+          whileHover={{ x: "120%" }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-white/10 -skew-x-12"
+        />
+
+        <motion.span
+          animate={{ x: [0, -5, 0] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          className="flex items-center"
+        >
+          <Home className="h-4 w-4 mr-1 group-hover:animate-bounce" />
+          {/* <span className="mr-2 group-hover:animate-bounce">←</span> */}
+        </motion.span>
+
+        <span className="relative z-10">Back to Home</span>
+      </Button>
+    </motion.div>
+
+                        </Link>
 
           <div className="flex justify-end gap-1 sm:gap-3">
             {/* Background Audio Player */}

@@ -153,9 +153,8 @@ const BorderPreview: React.FC<PreviewProps> = ({ settings, width = '100%', heigh
           alignItems: 'center',
           justifyContent: 'center',
           overflow: 'hidden',
-          background: 'linear-gradient(180deg, rgba(255,255,255,0.95), rgba(250,250,250,0.95))'
         }}
-        className="border-preview"
+        className="border-preview bg-white/95 dark:bg-gray-900/95 "
       >
         <div style={{ pointerEvents: 'none', textAlign: 'center', padding: 6 }}>
           <div style={{ fontSize: 12, color: '#333' }}>Preview</div>

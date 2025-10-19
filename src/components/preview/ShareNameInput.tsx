@@ -78,7 +78,8 @@ const ShareNameInput: React.FC = () => {
             }}
           />
 
-          <div className="relative flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-border/60 shadow-2xl">
+          <div className="relative flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-green-300 hover:border-green-700 shadow-2xl">
+
             {/* Animated Icon */}
             <motion.div
               className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-purple-500 text-primary-foreground shadow-lg"
@@ -104,7 +105,7 @@ const ShareNameInput: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="h-11 sm:h-12 pr-4 bg-background/60 border-border/40 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
+                className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/80 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
               />
               
               {/* Animated underline effect */}
@@ -164,7 +165,7 @@ const ShareNameInput: React.FC = () => {
                       </motion.span>
                     )}
                   </AnimatePresence>
-                  <span className="hidden sm:inline">Go</span>
+                  <span className="">Go</span>
                 </span>
               </Button>
             </motion.div>

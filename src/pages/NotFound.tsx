@@ -1,6 +1,9 @@
 import { motion, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useRef } from "react";
+import { Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { Home } from "lucide-react";
 
 const NotFoundPage = () => {
   const navigate = useNavigate();
@@ -180,6 +183,7 @@ const NotFoundPage = () => {
               Return to Home
             </span>
           </motion.button>
+
 
           {/* Floating particles */}
           {[...Array(15)].map((_, i) => (

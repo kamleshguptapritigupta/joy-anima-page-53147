@@ -261,7 +261,7 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                           <SelectItem value="bounce">Bounce</SelectItem>
                           <SelectItem value="shake">Shake</SelectItem>
                           <SelectItem value="revolve">Revolve (around border)</SelectItem>
-                          <SelectItem value="travel">Travel</SelectItem>
+                          <SelectItem value="travel">Travel (along border)</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
