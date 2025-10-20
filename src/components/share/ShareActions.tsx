@@ -17,6 +17,7 @@ import {
   Edit2,
 } from 'lucide-react';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
+import { generateShareMessage } from '@/utils/shareTexts';
 import type { EventType } from '@/types/greeting';
 import ViewGreeting from '@/pages/ViewGreeting'
 
@@ -110,15 +111,33 @@ const ShareActions = ({ greetingData, selectedEvent, onlyShareButton, dialogOpen
 
   const shareToSocialMedia = (platform: string) => {
     const shareableURL = generateShareableURL();
-    const text = translate("Check out this beautiful greeting I created!");
+    const eventType = greetingData?.eventType || 'default';
+    
+    // Get catchy share message with emojis and formatting
+    const catchyMessage = generateShareMessage(eventType, shareableURL);
+    
+    // For platforms that don't support rich text, use plain version
+    const plainText = catchyMessage.replace(/\*\*/g, '').replace(/\*/g, '');
+    
     let shareURL = '';
 
     switch (platform) {
-      case 'whatsapp': shareURL = `https://wa.me/?text=${encodeURIComponent(text + ' ' + shareableURL)}`; break;
-      case 'facebook': shareURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareableURL)}`; break;
-      case 'twitter': shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareableURL)}`; break;
-      case 'telegram': shareURL = `https://t.me/share/url?url=${encodeURIComponent(shareableURL)}&text=${encodeURIComponent(text)}`; break;
-      case 'linkedin': shareURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareableURL)}`; break;
+      case 'whatsapp': 
+        shareURL = `https://wa.me/?text=${encodeURIComponent(catchyMessage)}`; 
+        break;
+      case 'facebook': 
+        // Facebook doesn't allow pre-filled text, just URL
+        shareURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareableURL)}`; 
+        break;
+      case 'twitter': 
+        shareURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(plainText)}`; 
+        break;
+      case 'telegram': 
+        shareURL = `https://t.me/share/url?url=${encodeURIComponent(shareableURL)}&text=${encodeURIComponent(catchyMessage)}`; 
+        break;
+      case 'linkedin': 
+        shareURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareableURL)}`; 
+        break;
     }
 
     if (shareURL) window.open(shareURL, '_blank');
@@ -126,11 +145,15 @@ const ShareActions = ({ greetingData, selectedEvent, onlyShareButton, dialogOpen
 
   const handleNativeShare = async () => {
     const shareableURL = generateShareableURL();
+    const eventType = greetingData?.eventType || 'default';
+    const catchyMessage = generateShareMessage(eventType, shareableURL);
+    const plainText = catchyMessage.replace(/\*\*/g, '').replace(/\*/g, '');
+    
     if (navigator.share) {
       try {
         await navigator.share({
           title: translate('Beautiful Greeting'),
-          text: translate('Check out this beautiful greeting I created!'),
+          text: plainText,
           url: shareableURL
         });
       } catch (error) {
