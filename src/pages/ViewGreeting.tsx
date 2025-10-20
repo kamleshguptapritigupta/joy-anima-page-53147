@@ -12,6 +12,8 @@ import SEOManager from '@/components/seo/SEOManager';
 import BackgroundAudioPlayer from '@/components/greeting/contentEditor/AudioPlayerInput/BackgroundAudioPlayer';
 import NotFoundPage from './NotFound';
 import { motion } from 'framer-motion';
+import ShareNameInput from '@/components/preview/ShareNameInput';
+
 
 interface ViewGreetingProps {
   onClick?: () => void;
@@ -132,22 +134,28 @@ const ViewGreeting: React.FC<ViewGreetingProps> = ({ onClick, onlyCustomizeButto
             {/* BODY */}
             <main className="max-w-4xl mx-auto p-3 sm:p-4">
               <Preview greetingData={greetingData} selectedEvent={null} />
-              <div className="mt-6 mx-2 sm:mx-4 mb-6">
+              <div className="mt-6 mb-36">
                 <ShareActions greetingData={greetingData} selectedEvent={null} />
               </div>
+               {/* Share Name Input - Fixed at Bottom */}
+      {/* <ShareNameInput /> */}
+            <ShareNameInput greetingData={greetingData} />
+
             </main>
+                 
           </div>
         </>
       )}
 
       {/* Only Customize Button */}
-      {onlyCustomizeButton && (
+      {onlyCustomizeButton && ( 
         <AnimatedButton
           icon={<Edit3 className="h-4 w-4" />}
           label="Customize"
           onClick={handleCustomizeGreeting}
         />
       )}
+
     </>
   );
 };

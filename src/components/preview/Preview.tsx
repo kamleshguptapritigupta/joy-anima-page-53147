@@ -9,7 +9,6 @@ import GreetingTexts from './GreetingTexts';
 import EnhancedMediaGallery from './EnhancedMediaGallery';
 import SenderSection from './SenderSection';
 import AudioAutoPlay from './AudioAutoPlay';
-import ShareNameInput from './ShareNameInput';
 import { cn } from '@/lib/utils';
 
 interface PreviewProps {
@@ -33,7 +32,7 @@ const Preview = ({
   // Default view mode
   return (
     <>
-      <BackgroundWrapper greetingData={greetingData} className={cn('preview-theme-static pb-28', className)}>
+     <BackgroundWrapper greetingData={greetingData} className={cn('preview-theme-static pb-32 sm:pb-36', className)}>
           <BorderContainer
             greetingData={greetingData}
             selectedEvent={selectedEvent}
@@ -62,8 +61,6 @@ const Preview = ({
           />
       </BackgroundWrapper>
 
-      {/* Share Name Input - Fixed at Bottom */}
-      <ShareNameInput />
     </>
   );
 };

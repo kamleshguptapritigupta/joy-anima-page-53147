@@ -190,7 +190,7 @@ const BorderContainer: React.FC<Props> = ({ greetingData, selectedEvent, childre
       )}
 
       {/* Content */}
-      <div className="p-6 md:p-10 relative z-2">{children}</div>
+      <div className="p-[5px] md:p-[10px] relative z-2">{children}</div>
 
       {/* Decorative Elements */}
       {borderSettings.enabled && borderSettings.decorativeElements?.map(el => {

@@ -56,9 +56,9 @@ const ShareNameInput: React.FC = () => {
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      className="fixed bottom-0 left-0 right-0 z-50 p-3 sm:p-4 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50"
     >
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-3xl my-2 mx-auto">
         <motion.div
           className="relative"
           whileHover={{ scale: 1.01 }}
@@ -78,7 +78,7 @@ const ShareNameInput: React.FC = () => {
             }}
           />
 
-          <div className="relative flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-green-300 hover:border-green-700 shadow-2xl">
+          <div className="relative flex items-center gap-2 sm:gap-3 sm:p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-green-300 hover:border-green-500 shadow-2xl">
 
             {/* Animated Icon */}
             <motion.div
@@ -105,7 +105,7 @@ const ShareNameInput: React.FC = () => {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 onKeyPress={handleKeyPress}
-                className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/80 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
+                className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
               />
               
               {/* Animated underline effect */}
@@ -206,7 +206,10 @@ const ShareNameInput: React.FC = () => {
           transition={{ delay: 0.5 }}
           className="text-center text-xs sm:text-sm text-muted-foreground mt-2"
         >
-          Share this greeting with others
+          Share this greeting with others 
+          <span  className="text-lg ml-1 animate-pulse">
+                              💖
+                            </span>
         </motion.p>
       </div>
     </motion.div>

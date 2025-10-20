@@ -28,17 +28,24 @@ const AudioAutoPlay: React.FC<AudioAutoPlayProps> = ({
     setHasError(false);
     setIsMuted(false);
     audio.muted = false;
+    audio.loop = true; // Ensure looping is always set
 
     const attemptAutoPlay = async () => {
       if (!autoPlay) return;
       
       try {
-        // Load and play immediately
+        // Load first
+        audio.load();
+        
+        // Small delay to ensure loading
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Try to play
         await audio.play();
         setIsPlaying(true);
         console.log('✅ Audio auto-play successful');
       } catch (error) {
-        console.log('⚠️ Auto-play prevented, trying with user interaction:', error);
+        console.log('⚠️ Auto-play blocked, waiting for user interaction:', error);
         
         // If autoplay blocked, try on first user interaction
         const playOnInteraction = async () => {
@@ -46,38 +53,65 @@ const AudioAutoPlay: React.FC<AudioAutoPlayProps> = ({
             await audio.play();
             setIsPlaying(true);
             console.log('✅ Audio started after user interaction');
-            // Remove listeners after successful play
-            document.removeEventListener('click', playOnInteraction);
-            document.removeEventListener('touchstart', playOnInteraction);
           } catch (err) {
             console.error('❌ Failed to play audio:', err);
+            setHasError(true);
           }
         };
         
-        document.addEventListener('click', playOnInteraction, { once: true });
-        document.addEventListener('touchstart', playOnInteraction, { once: true });
+        // Add multiple interaction listeners
+        const events = ['click', 'touchstart', 'keydown', 'scroll'];
+        events.forEach(event => {
+          document.addEventListener(event, playOnInteraction, { once: true });
+        });
+        
+        // Cleanup function for unmounted state
+        return () => {
+          events.forEach(event => {
+            document.removeEventListener(event, playOnInteraction);
+          });
+        };
       }
     };
 
     const handleCanPlay = () => {
+      console.log('🎵 Audio can play');
       attemptAutoPlay();
     };
 
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-    const handleEnded = () => setIsPlaying(false);
-    const handleError = () => {
+    const handlePlay = () => {
+      console.log('▶️ Audio playing');
+      setIsPlaying(true);
+    };
+    
+    const handlePause = () => {
+      console.log('⏸️ Audio paused');
+      setIsPlaying(false);
+    };
+    
+    const handleEnded = () => {
+      console.log('⏹️ Audio ended');
+      // Restart for looping
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(err => console.log('Loop play failed:', err));
+      }
+    };
+    
+    const handleError = (e: Event) => {
+      console.error('❌ Audio error:', e);
       setHasError(true);
       setIsPlaying(false);
     };
 
+    // Add all listeners
     audio.addEventListener('canplay', handleCanPlay);
     audio.addEventListener('play', handlePlay);
     audio.addEventListener('pause', handlePause);
     audio.addEventListener('ended', handleEnded);
     audio.addEventListener('error', handleError);
 
-    // Load the audio
+    // Start loading
     audio.load();
 
     return () => {

@@ -164,11 +164,16 @@ const CustomEventSelector = ({
                   <Search className="absolute z-20 left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground shadow-lg group-hover:text-primary transition-colors" />
                   <Input
                     value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
+                    onChange={(e) => {
+                      e.stopPropagation();
+                      setSearchQuery(e.target.value);
+                    }}
                     placeholder="Search events..."
                     className="pl-9 pr-8 h-8 text-sm bg-background/50 backdrop-blur-sm border-muted hover:border-primary/50 focus:border-primary transition-all duration-200 dark:bg-background/30"
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
                   />
                   {searchQuery && (
                     <Button
@@ -345,23 +350,27 @@ const CustomEventSelector = ({
               onClick={toggleEmojiCustomizer}
             >
               <span className="hidden sm:inline">
-                {showEmojiCustomizer ? "Hide" : `Edit Emoji Style  ${selectedEventData.emoji}`}
+                {showEmojiCustomizer ? "Hide" : `Edit Emoji Style  ${eventEmojiSettings?.emoji || selectedEventData.emoji}`}
               </span>
               <span className="sm:hidden">
-                {showEmojiCustomizer ? "❌" : `Edit ${selectedEventData.emoji}`}
+                {showEmojiCustomizer ? "❌" : `Edit ${eventEmojiSettings?.emoji || selectedEventData.emoji}`}
               </span>
             </Button>
           </div>
         </div>
 
-        {/* Selected Event Details */}
+        {/* Selected Event Details - Show Customized Values */}
         <div className="flex items-center gap-3 mt-2">
           {selectedEventData ? (
             <>
-              <span className="text-3xl">{selectedEventData.emoji}</span>
+              <span className="text-3xl">{eventEmojiSettings?.emoji || selectedEventData.emoji}</span>
               <div>
-                <p className="font-semibold text-foreground dark:text-purple-200">
-                  {selectedEventData.label}
+                <p className="font-semibold text-foreground dark:text-purple-200" style={{
+                  // fontSize: eventNameStyle?.style?.fontSize || '16px',
+                  fontWeight: eventNameStyle?.style?.fontWeight || 'bold',
+                  color: eventNameStyle?.style?.color || 'inherit',
+                }}>
+                  {eventNameStyle?.content || selectedEventData.label}
                 </p>
                 <p className="text-xs text-muted-foreground line-clamp-2">
                   {selectedEventData.defaultMessage}
