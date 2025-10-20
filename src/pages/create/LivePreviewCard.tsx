@@ -92,7 +92,7 @@ const LivePreviewCard: React.FC<LivePreviewCardProps> = ({
  
             </div>
 
-            {/* Auto-playing audio */}
+            {/* Auto-playing audio  */}
             <AudioAutoPlay 
               audioUrl={formData.audioUrl}
               autoPlay={true}

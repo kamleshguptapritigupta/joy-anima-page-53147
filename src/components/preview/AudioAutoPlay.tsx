@@ -179,7 +179,7 @@ const AudioAutoPlay: React.FC<AudioAutoPlayProps> = ({
                 <motion.div
                   animate={{ scale: [1, 1.2, 1] }}
                   transition={{ duration: 1, repeat: Infinity }}
-                >
+                > 
                   <Volume2 className="w-4 h-4 text-primary" />
                 </motion.div>
               ) : (
