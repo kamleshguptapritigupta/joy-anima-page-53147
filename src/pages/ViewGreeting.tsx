@@ -134,7 +134,7 @@ const ViewGreeting: React.FC<ViewGreetingProps> = ({ onClick, onlyCustomizeButto
             {/* BODY */}
             <main className="max-w-4xl mx-auto p-3 sm:p-4">
               <Preview greetingData={greetingData} selectedEvent={null} showShareInput />
-              <div className="mt-6 mb-36">
+              <div className="mt-1 mb-40">
                 <ShareActions greetingData={greetingData} selectedEvent={null} />
               </div>
             </main>

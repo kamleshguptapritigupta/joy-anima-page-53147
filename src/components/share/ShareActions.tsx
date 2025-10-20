@@ -219,6 +219,12 @@ const ShareActions = ({ greetingData, selectedEvent, onlyShareButton, dialogOpen
         <DialogContent className="max-w-md rounded-xl p-6">
           <DialogHeader>
             <DialogTitle className="text-center">{translate('Share Your Greeting')}</DialogTitle>
+            {/* 👇 "Sharing as" line */}
+            {greetingData.senderName && (
+              <small className="mt-2 text-center text-sm text-muted-foreground">
+                Sharing as: {greetingData.senderName}
+              </small>
+            )}
           </DialogHeader>
 
           <div className="space-y-4 mt-2">

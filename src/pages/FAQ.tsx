@@ -81,7 +81,7 @@ const FAQ = ({ onClick }: { onClick?: () => void }) => {
         description="Find answers to common questions about creating and sharing beautiful greeting cards. Learn how to use all features effectively."
       />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto mb-10 z-10">
         {/* Back Button */}
         <Link to="/">
                                   <motion.div

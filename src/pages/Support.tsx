@@ -92,7 +92,7 @@ const Support = ({ onClick }: { onClick?: () => void }) => {
         />
       ))}
 
-      <div className="relative max-w-5xl mx-auto z-10">
+      <div className="relative max-w-5xl mx-auto mb-10 z-10">
         {/* Back Button */}
         <Link to="/">
                                   <motion.div

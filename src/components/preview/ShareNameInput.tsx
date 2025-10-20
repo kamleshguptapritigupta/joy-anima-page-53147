@@ -67,7 +67,7 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
       className="fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50"
     >
-      <div className="max-w-3xl my-2 mx-auto">
+      <div className="max-w-3xl my-5 z-10 mx-auto">
         <motion.div
           className="relative"
           whileHover={{ scale: 1.01 }}
@@ -87,7 +87,7 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
             }}
           />
 
-          <div className="relative flex items-center gap-2 sm:gap-3 sm:p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-green-300 hover:border-green-500 shadow-2xl">
+          <div className="relative flex items-center gap-2 mx-4 sm:gap-3 p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-green-300 hover:border-green-500 shadow-2xl">
 
             {/* Animated Icon */}
             <motion.div

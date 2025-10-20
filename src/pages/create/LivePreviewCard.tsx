@@ -77,7 +77,7 @@ const LivePreviewCard: React.FC<LivePreviewCardProps> = ({
 
       <CardContent>
         {formData.eventType ? ( 
-          <div className="space-y-4">
+          <div className="space-y-1">
             <Preview 
               greetingData={formData} 
               selectedEvent={selectedEvent} 

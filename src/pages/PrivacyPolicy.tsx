@@ -83,7 +83,7 @@ const PrivacyPolicy = ({ onClick }: { onClick?: () => void }) => {
         description="Learn how we protect your data and respect your privacy. Transparent policies for a secure greeting card creation experience."
       />
 
-      <div className=" relative max-w-5xl mx-auto">
+      <div className=" relative max-w-5xl mx-auto mb-10 z-10">
         {/* Back Button */}
         <Link to="/">
                                    <motion.div

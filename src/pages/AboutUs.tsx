@@ -66,7 +66,7 @@ const AboutUs = ({ onClick }: { onClick?: () => void }) => {
         description="Learn about our mission to spread joy and love through beautiful, personalized greeting cards for every occasion."
       />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-5xl mx-auto mb-10 z-10">
         {/* Back Button */}
         <Link to="/">
                                    <motion.div
