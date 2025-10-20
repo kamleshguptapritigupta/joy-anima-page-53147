@@ -470,8 +470,7 @@ const PublicGreetingsFeed: React.FC = () => {
   >
     <span className="flex items-center gap-2">
       <span className="text-xl hover:animate-spin">✨</span>
-      <span className="hidden sm:inline">Share Your Greeting</span>
-      <span className="sm:hidden">Share</span>
+      <span className="">Create Your Greeting</span>
     </span>
 
     {/* Shine Effect */}

@@ -345,7 +345,7 @@ const CustomEventSelector = ({
               onClick={toggleEmojiCustomizer}
             >
               <span className="hidden sm:inline">
-                {showEmojiCustomizer ? "Hide" : "Edit Emoji Style"}
+                {showEmojiCustomizer ? "Hide" : `Edit Emoji Style  ${selectedEventData.emoji}`}
               </span>
               <span className="sm:hidden">
                 {showEmojiCustomizer ? "❌" : `Edit ${selectedEventData.emoji}`}

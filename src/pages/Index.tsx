@@ -12,7 +12,6 @@ import TypingText from '../components/reusableTypingText/TypingText'
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import LandingPage from '@/components/landingPage/LandingPage'
 import Preview from '@/components/preview/Preview';
-import { FloatingButton } from '@/components/share/CustomizeAndShare';
 import { useFirebaseGreetings } from '@/hooks/useFirebaseGreetings';
 
 const Index = () => {
@@ -110,7 +109,6 @@ if (greetingData && (greetingData.eventType || greetingData.customEventName)) {
         greetingData={greetingData}
         selectedEvent={currentEvent}
       />
-      <FloatingButton />
     </>
   );
 }

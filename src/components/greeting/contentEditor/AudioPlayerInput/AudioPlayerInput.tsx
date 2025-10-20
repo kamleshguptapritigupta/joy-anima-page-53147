@@ -479,7 +479,8 @@ const extractYouTubeVideoId = (urlStr: string): string | null => {
       className={cn(
         "pr-10 transition-all truncate", // ✅ prevent overflow
         !supported && value && "border-destructive",
-        isLoading && "animate-pulse"
+        isLoading && "animate-pulse",
+        "dark:bg-muted/30 dark:border-muted/50 dark:placeholder:text-muted-foreground dark:text-white"
       )}
       disabled={isLoading}
     />

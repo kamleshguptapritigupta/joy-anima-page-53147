@@ -118,7 +118,7 @@ const BasicDetailsForm: React.FC<BasicDetailsFormProps> = ({
             value={senderName}
             onChange={(e) => onInputChange('senderName', e.target.value)}
             placeholder={translate('Your name (optional)')}
-            className="dark:bg-background/50 dark:border-muted/50"
+            className="dark:bg-muted/30 dark:border-muted/50 dark:placeholder:text-muted-foreground dark:text-white"
           />
 
            {/* Sender Name Customizer */}
@@ -152,7 +152,7 @@ const BasicDetailsForm: React.FC<BasicDetailsFormProps> = ({
             value={receiverName}
             onChange={(e) => onInputChange('receiverName', e.target.value)}
             placeholder={translate("Recipient's name (optional)")}
-            className="dark:bg-background/50 dark:border-muted/50"
+            className="dark:bg-muted/30 dark:border-muted/50 dark:placeholder:text-muted-foreground dark:text-white"
           />
 
 

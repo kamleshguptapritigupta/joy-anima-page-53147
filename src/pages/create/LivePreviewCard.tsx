@@ -7,6 +7,7 @@ import { useLanguageTranslation } from '@/components/language/useLanguageTransla
 import AudioAutoPlay from '@/components/preview/AudioAutoPlay';
 import { motion, AnimatePresence } from 'framer-motion';
 
+
 interface LivePreviewCardProps {
   formData: GreetingFormData;
   selectedEvent: EventType | null;
@@ -88,11 +89,12 @@ const LivePreviewCard: React.FC<LivePreviewCardProps> = ({
                 selectedEvent={selectedEvent}
                 onClearAutoSave={onClearAutoSave}
               />
+ 
             </div>
 
             {/* Auto-playing audio */}
             <AudioAutoPlay 
-              audioUrl={formData.audioUrl} 
+              audioUrl={formData.audioUrl}
               autoPlay={true}
             />
           </div>

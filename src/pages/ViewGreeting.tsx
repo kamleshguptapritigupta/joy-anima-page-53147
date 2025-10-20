@@ -1,25 +1,27 @@
 // pages/ViewGreeting.tsx
 import React, { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useFirebaseGreetings } from '@/hooks/useFirebaseGreetings';
 import { GreetingFormData } from '@/types/greeting';
 import Preview from '@/components/preview/Preview';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Share2, Edit3, Home } from 'lucide-react';
+import { Share2, Edit3, Home } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import ShareActions from '@/components/share/ShareActions';
-import { FloatingButton } from '@/components/share/CustomizeAndShare';
 import SEOManager from '@/components/seo/SEOManager';
 import BackgroundAudioPlayer from '@/components/greeting/contentEditor/AudioPlayerInput/BackgroundAudioPlayer';
-import AudioAutoPlay from '@/components/preview/AudioAutoPlay';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
-import NotFoundPage from "./NotFound"
+import NotFoundPage from './NotFound';
+import { motion } from 'framer-motion';
 
-const ViewGreeting: React.FC = ({ onClick }: { onClick?: () => void }) => {
+interface ViewGreetingProps {
+  onClick?: () => void;
+  onlyCustomizeButton?: boolean;
+}
+
+const ViewGreeting: React.FC<ViewGreetingProps> = ({ onClick, onlyCustomizeButton }) => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { loadGreeting, isLoading: hookLoading } = useFirebaseGreetings();
+  const { loadGreeting } = useFirebaseGreetings();
   const [greetingData, setGreetingData] = useState<GreetingFormData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [initialLoading, setInitialLoading] = useState<boolean>(true);
@@ -28,56 +30,47 @@ const ViewGreeting: React.FC = ({ onClick }: { onClick?: () => void }) => {
 
   useEffect(() => {
     mountedRef.current = true;
-    return () => { mountedRef.current = false; };
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
   useEffect(() => {
-    // Guard: need slug
     if (!slug) {
-      console.warn('ViewGreeting: no slug found in params');
       setError('No greeting slug provided');
       setInitialLoading(false);
       return;
     }
 
-    // Only run initial fetch once (per mount)
     let cancelled = false;
-    const fetch = async () => {
+
+    const fetchGreeting = async () => {
       try {
-        console.log('🚀 ViewGreeting: fetching slug=', slug);
         setInitialLoading(true);
         const data = await loadGreeting(slug);
         if (cancelled || !mountedRef.current) return;
 
-        console.log('📋 ViewGreeting: loadGreeting returned', data);
         if (data) {
           setGreetingData(data);
           setError(null);
-          console.log('✅ ViewGreeting: greetingData set');
         } else {
           setGreetingData(null);
           setError('Greeting not found');
-          console.warn('❌ ViewGreeting: greeting not found for slug=', slug);
         }
       } catch (err) {
-        console.error('❌ ViewGreeting: error fetching greeting', err);
         if (!cancelled && mountedRef.current) setError('Failed to load greeting');
       } finally {
-        if (!cancelled && mountedRef.current) {
-          setInitialLoading(false);
-        }
+        if (!cancelled && mountedRef.current) setInitialLoading(false);
       }
     };
 
-    fetch();
-
-    return () => { cancelled = true; };
+    fetchGreeting();
+    return () => {
+      cancelled = true;
+    };
   }, [slug, loadGreeting]);
 
-  // Loader UI: show only while initial load is happening.
-  // If hookLoading toggles later (e.g. viewCount increment), don't re-show the big loader.
   if (initialLoading && !greetingData) {
-    console.log('⏳ ViewGreeting: initial loading...');
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-background to-secondary/20">
         <div className="text-center">
@@ -88,133 +81,120 @@ const ViewGreeting: React.FC = ({ onClick }: { onClick?: () => void }) => {
     );
   }
 
-  // Error or not found
   if (error || !greetingData) {
-    console.log('❌ ViewGreeting: error state or empty data', { error, hasData: !!greetingData });
-    return (
-      < NotFoundPage />
-    );
+    return <NotFoundPage />;
   }
 
-  // Render the greeting (stable view). We intentionally do NOT re-show a full-page loader
-  // if hookLoading is true later (that would cause flashing).
-  console.log('🎯 ViewGreeting: rendering greeting', greetingData);
-  const handleShareGreeting = () => {
-    const shareableURL = `${window.location.origin}/${slug}`;
-    navigator.clipboard.writeText(shareableURL);
-    toast({
-      title: "Link copied!",
-      description: "Greeting link has been copied to your clipboard.",
-    });
-  };
-
   const handleCustomizeGreeting = () => {
-    // Navigate to create page with the current greeting data
     navigate(`/create?edit=${slug}`, { state: { greetingData } });
   };
 
   return (
-     <>
-    <SEOManager 
-        title={`${greetingData.eventType || 'Greeting'} for ${greetingData.receiverName || 'You'}`}
-        description={greetingData.texts?.[0]?.content || greetingData.customEventText || ' '}
-        customEventName = {greetingData.customEventName}
-        greetingData={greetingData}
-      />
+    <>
+      {!onlyCustomizeButton && (
+        <>
+          <SEOManager
+            title={`${greetingData.eventType || 'Greeting'} for ${greetingData.receiverName || 'You'}`}
+            description={greetingData.texts?.[0]?.content || greetingData.customEventText || ' '}
+            customEventName={greetingData.customEventName}
+            greetingData={greetingData}
+          />
 
-    <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/20">
-      {/* Header */}
-      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-sm border-b">
-        <div className="mr-2 sm:mx-4 px-2 sm:px-4 py-3 flex items-center justify-between">
-          {/* <Button variant="ghost" onClick={() => navigate('/')} className="gap-2">
-            <ArrowLeft className="h-4 w-4 animate-bounce" />
-            Home
-          </Button> */}
-              {/* Back Button */}
-                        <Link to="/">
-                         <motion.div
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      whileHover={{
-        scale: 1.05,
-        boxShadow: "0 0 25px rgba(168, 85, 247, 0.4)",
-      }}
-      whileTap={{ scale: 0.97 }}
-      className="inline-block"
-    >
-      <Button
-        variant="outline"
-        onClick={onClick}
-        className="
-          relative overflow-hidden
-          bg-white/70 dark:bg-gray-900/70
-          backdrop-blur-md
-          text-gray-900 dark:text-gray-100
-          border border-gray-200/60 dark:border-gray-700/60
-          hover:border-primary hover:text-primary
-          transition-all duration-300
-          flex items-center gap-2 group
-        "
-      >
-        {/* subtle shine on hover */}
-        <motion.span
-          initial={{ x: "-120%" }}
-          whileHover={{ x: "120%" }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
-          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent dark:via-white/10 -skew-x-12"
-        />
+          <div className="min-h-screen bg-gradient-to-br from-white via-gray-50 to-gray-100 dark:from-gray-900 dark:via-gray-950 dark:to-black transition-colors duration-500">
+            {/* HEADER */}
+            <header className="sticky top-0 z-50 bg-white/70 dark:bg-gray-900/70 backdrop-blur-md border-b border-gray-200 dark:border-gray-700">
+              <div className="flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3">
+                {/* BACK BUTTON */}
+                <Link to="/">
+                  <AnimatedButton icon={<Home className="h-4 w-4" />} label="Home" onClick={onClick} />
+                </Link>
 
-        <motion.span
-          animate={{ x: [0, -5, 0] }}
-          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="flex items-center"
-        >
-          <Home className="h-4 w-4 mr-1 group-hover:animate-bounce" />
-          {/* <span className="mr-2 group-hover:animate-bounce">←</span> */}
-        </motion.span>
+                {/* RIGHT SIDE BUTTONS */}
+                <div className="flex items-center gap-1 sm:gap-3">
+                  {/* Audio Player */}
+                  {greetingData.audioUrl && (
+                    <BackgroundAudioPlayer audioUrl={greetingData.audioUrl} autoPlay />
+                  )}
 
-        <span className="relative z-10">Back to Home</span>
-      </Button>
-    </motion.div>
+                  {/* Share Button */}
+                  <ShareActions greetingData={greetingData} onlyShareButton />
 
-                        </Link>
+                  {/* Customize */}
+                  <AnimatedButton
+                    icon={<Edit3 className="h-4 w-4" />}
+                    label="Customize"
+                    onClick={handleCustomizeGreeting}
+                  />
+                </div>
+              </div>
+            </header>
 
-          <div className="flex justify-end gap-1 sm:gap-3">
-            {/* Background Audio Player */}
-            {greetingData.audioUrl && (
-              <BackgroundAudioPlayer 
-                audioUrl={greetingData.audioUrl}
-                autoPlay={true}
-                className=""
-              />
-            )}
-            
-            <Button onClick={handleCustomizeGreeting} variant="outline" className="gap-1 md:gap-2 bg-primary/10 text-primary border-primary hover:bg-gray-300">
-              <Edit3 className="h-4 w-4" />
-              Customize
-            </Button>
-            
-            <Button onClick={handleShareGreeting} className="gap-1 md:gap-2">
-              <Share2 className="h-4 w-4" />
-              Share
-            </Button>
+            {/* BODY */}
+            <main className="max-w-4xl mx-auto p-3 sm:p-4">
+              <Preview greetingData={greetingData} selectedEvent={null} />
+              <div className="mt-6 mx-2 sm:mx-4 mb-6">
+                <ShareActions greetingData={greetingData} selectedEvent={null} />
+              </div>
+            </main>
           </div>
-        </div> 
-      </div>
+        </>
+      )}
 
-      {/* Greeting Preview */}
-      <div className="max-w-4xl mx-auto p-4">
-        <Preview greetingData={greetingData} selectedEvent={null} />
-        <div className="mt-6 mx-4 mb-6">
-          <ShareActions greetingData={greetingData} selectedEvent={null} />
-        </div>
-         <FloatingButton />
-      </div>
-    </div>
-
+      {/* Only Customize Button */}
+      {onlyCustomizeButton && (
+        <AnimatedButton
+          icon={<Edit3 className="h-4 w-4" />}
+          label="Customize"
+          onClick={handleCustomizeGreeting}
+        />
+      )}
     </>
   );
 };
 
 export default ViewGreeting;
+
+/* 🔹 Consistent Animated Button Component */
+interface AnimatedButtonProps {
+  icon: React.ReactNode;
+  label: string;
+  onClick: () => void;
+}
+
+const AnimatedButton: React.FC<AnimatedButtonProps> = ({ icon, label, onClick }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, ease: 'easeOut' }}
+    whileHover={{
+      scale: 1.05,
+      boxShadow: '0 0 25px rgba(168,85,247,0.3)',
+    }}
+    whileTap={{ scale: 0.96 }}
+    className="relative inline-flex"
+  >
+    <Button
+      variant="outline"
+      onClick={onClick}
+      className="relative overflow-hidden bg-white/50 dark:bg-gray-900/70 backdrop-blur-md 
+                 text-gray-900 dark:text-gray-100 border border-gray-400 dark:border-gray-600
+                 hover:border-primary hover:text-primary transition-all duration-300 flex items-center gap-1 sm:gap-2 text-base"
+    >
+      {/* subtle shine on hover */}
+      <motion.span
+        initial={{ x: '-120%' }}
+        whileHover={{ x: '120%' }}
+        transition={{ duration: 1.2, ease: 'easeInOut' }}
+        className="absolute inset-0 bg-gradient-to-r from-transparent via-green/70 to-transparent dark:via-white/10 -skew-x-12"
+      />
+      <span className="relative z-10 flex items-center gap-1">
+        {icon}
+         {label !== "Customize" ? (
+          <span className="hidden sm:inline">{label}</span>
+        ) : (
+          <span>{label}</span>
+        )}
+      </span>
+    </Button>
+  </motion.div>
+);
