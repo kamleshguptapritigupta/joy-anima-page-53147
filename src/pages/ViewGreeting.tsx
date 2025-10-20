@@ -138,9 +138,8 @@ const ViewGreeting: React.FC<ViewGreetingProps> = ({ onClick, onlyCustomizeButto
                 <ShareActions greetingData={greetingData} selectedEvent={null} />
               </div>
                {/* Share Name Input - Fixed at Bottom */}
-      {/* <ShareNameInput /> */}
-            <ShareNameInput greetingData={greetingData} />
-
+      <ShareNameInput />
+      
             </main>
                  
           </div>
