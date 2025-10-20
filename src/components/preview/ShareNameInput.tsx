@@ -4,10 +4,18 @@ import { Send, Sparkles, Heart, Star, Zap } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import ShareActions from '@/components/share/ShareActions';
+import type { GreetingFormData } from '@/types/greeting';
 
-const ShareNameInput: React.FC = () => {
+interface ShareNameInputProps {
+  greetingData: GreetingFormData;
+}
+
+const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
   const [name, setName] = useState('');
   const [animationVariant, setAnimationVariant] = useState(0);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [modifiedGreetingData, setModifiedGreetingData] = useState<GreetingFormData>(greetingData);
   const { toast } = useToast();
 
   // Random animation variant on mount
@@ -25,14 +33,15 @@ const ShareNameInput: React.FC = () => {
       return;
     }
 
-    // TODO: Implement share logic with user's name
-    toast({
-      title: "Sharing...",
-      description: `${name} is sharing this greeting!`
-    });
+    // Update greeting data with new sender name
+    const updatedData = {
+      ...greetingData,
+      senderName: name.trim()
+    };
+    setModifiedGreetingData(updatedData);
     
-    // Clear input after share
-    setName('');
+    // Open share dialog
+    setShareDialogOpen(true);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -211,6 +220,16 @@ const ShareNameInput: React.FC = () => {
                               💖
                             </span>
         </motion.p>
+      </div>
+
+      {/* Share Dialog using ShareActions */}
+      <div className="hidden">
+        <ShareActions 
+          greetingData={modifiedGreetingData}
+          onlyShareButton={false}
+          dialogOpen={shareDialogOpen}
+          onDialogChange={setShareDialogOpen}
+        />
       </div>
     </motion.div>
   );

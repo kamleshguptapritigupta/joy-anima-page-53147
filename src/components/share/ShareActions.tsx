@@ -67,11 +67,17 @@ interface ShareActionsProps {
   greetingData: any;
   greetingRef?: React.RefObject<HTMLDivElement>;
   selectedEvent?: EventType | null;
-  onlyShareButton?: boolean; // new prop
+  onlyShareButton?: boolean;
+  dialogOpen?: boolean; // controlled dialog state
+  onDialogChange?: (open: boolean) => void; // controlled dialog handler
 }
 
-const ShareActions = ({ greetingData, selectedEvent, onlyShareButton }: ShareActionsProps) => {
-  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+const ShareActions = ({ greetingData, selectedEvent, onlyShareButton, dialogOpen, onDialogChange }: ShareActionsProps) => {
+  const [internalDialogOpen, setInternalDialogOpen] = useState(false);
+  
+  // Use controlled state if provided, otherwise use internal state
+  const shareDialogOpen = dialogOpen !== undefined ? dialogOpen : internalDialogOpen;
+  const setShareDialogOpen = onDialogChange || setInternalDialogOpen;
   const [isCopied, setIsCopied] = useState(false);
   const { toast } = useToast();
   const { translate } = useLanguageTranslation();

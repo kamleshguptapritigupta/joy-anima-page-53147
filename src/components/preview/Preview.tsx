@@ -9,6 +9,7 @@ import GreetingTexts from './GreetingTexts';
 import EnhancedMediaGallery from './EnhancedMediaGallery';
 import SenderSection from './SenderSection';
 import AudioAutoPlay from './AudioAutoPlay';
+import ShareNameInput from './ShareNameInput';
 import { cn } from '@/lib/utils';
 
 interface PreviewProps {
@@ -17,6 +18,7 @@ interface PreviewProps {
   frameStyle?: string;
   mediaAnimation?: string;
   className?: string;
+  showShareInput?: boolean;
 }
 
 const Preview = ({
@@ -25,6 +27,7 @@ const Preview = ({
   frameStyle,
   mediaAnimation,
   className,
+  showShareInput = false,
 }: PreviewProps) => {
   const { translate } = useLanguageTranslation();
 
@@ -61,6 +64,10 @@ const Preview = ({
           />
       </BackgroundWrapper>
 
+      {/* Share Name Input - only show in shared view */}
+      {showShareInput && (
+        <ShareNameInput greetingData={greetingData} />
+      )}
     </>
   );
 };
