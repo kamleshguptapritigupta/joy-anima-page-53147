@@ -225,12 +225,13 @@ const BorderCustomizer: React.FC<BorderCustomizerProps> = ({ settings, onChange 
                       placeholder={el.type === 'emoji' ? 'Enter emoji' : 'Image URL'} 
                       className="flex-1"
                     />
-</div>
-<div className="flex items-center gap-2 justify-end">
                     <ElementPicker 
                       type={el.type} 
                       onSelect={(v) => updateElement(el.id, 'content', v)} 
                     />
+</div>
+<div className="flex items-center gap-2 justify-end">
+                    
 
                     <Button 
                       

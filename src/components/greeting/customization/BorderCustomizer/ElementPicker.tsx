@@ -25,7 +25,7 @@ export default function ElementPicker({ onSelect, type }: ElementPickerProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline"  className="ml-2 w-10 p-0">
+        <Button variant="outline"  className="ml-2 w-20 p-0">
           <SmilePlus className="h-4 w-4" />
         </Button>
       </PopoverTrigger>
