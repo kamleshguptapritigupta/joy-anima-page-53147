@@ -185,11 +185,12 @@ const CreatePage: React.FC = ({ onClick }: { onClick?: () => void }) => {
             />
           </div>
         </div>
+                {/* Fixed Share Button */}
            <div className="flex justify-center mb-2">
               <FirebaseShareButton
                 greetingData={formData}
                 selectedEvent={selectedEvent}
-                onClearAutoSave={onClearAutoSave}
+                // onClearAutoSave={onClearAutoSave}
               />
             </div>
 

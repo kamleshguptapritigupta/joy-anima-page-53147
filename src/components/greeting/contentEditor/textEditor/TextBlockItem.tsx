@@ -52,9 +52,14 @@ export default function TextBlockItem({ text, index, isActive, onRemove, onMove,
     <Textarea
       value={text.content}
       onChange={(e) => onUpdate({ content: e.target.value })}
-      placeholder="Enter your message here..."
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.stopPropagation();
+        }
+      }}
+      placeholder="Enter your message here... (Shift+Enter for new line)"
       rows={2}
-      className="text-sm min-h-[80px] w-full resize-none overflow-auto break-words whitespace-pre-wrap [text-wrap:pretty] hyphens-auto pr-8"
+      className="text-sm min-h-[80px] w-full resize-none overflow-auto break-words whitespace-pre-wrap [text-wrap:pretty] hyphens-auto pr-8 dark:bg-muted/30 dark:border-muted/50 dark:text-white"
     />
 
     {text.content && (
