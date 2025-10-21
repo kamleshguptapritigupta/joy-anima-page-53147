@@ -7,6 +7,7 @@ import { Share2, Loader2 } from 'lucide-react';
 import { useLanguageTranslation } from '@/components/language/useLanguageTranslation';
 import ShareActions from '@/components/share/ShareActions';
 import { motion } from 'framer-motion';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface FirebaseShareButtonProps {
   greetingData: GreetingFormData;
@@ -30,6 +31,7 @@ const FirebaseShareButton: React.FC<FirebaseShareButtonProps> = ({
   const { saveGreeting, isSaving: hookIsSaving } = useFirebaseGreetings();
   const { toast } = useToast();
   const { translate } = useLanguageTranslation();
+  const isMobile = useIsMobile();
 
   const handleSaveAndShare = async () => {
     if (!greetingData.eventType) {
@@ -76,9 +78,9 @@ const FirebaseShareButton: React.FC<FirebaseShareButtonProps> = ({
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      className="fixed bottom-0 left-0 right-0 z-40 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50"
+      className={`${isMobile ? 'fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50' : 'relative'}`}
     >
-      <div className="max-w-3xl my-5 mx-auto px-4">
+      <div className={`max-w-3xl mx-auto px-4 ${isMobile ? 'my-5' : 'my-2'}`}>
         <motion.div
           className="relative"
           whileHover={{ scale: 1.01 }}

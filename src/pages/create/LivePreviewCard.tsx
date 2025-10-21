@@ -83,7 +83,7 @@ const LivePreviewCard: React.FC<LivePreviewCardProps> = ({
               selectedEvent={selectedEvent} 
             />
 
-            <div className="flex justify-center mb-24 relative z-10">
+            <div className="flex justify-center mb-2">
               <FirebaseShareButton
                 greetingData={formData}
                 selectedEvent={selectedEvent}
