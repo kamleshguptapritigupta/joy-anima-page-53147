@@ -35,7 +35,7 @@ const Preview = ({
   // Default view mode
   return (
     <>
-     <BackgroundWrapper greetingData={greetingData} className={cn('preview-theme-static pb-12 sm:pb-16', className)}>
+     <BackgroundWrapper greetingData={greetingData} className={cn('preview-theme-static pb-22 sm:pb-26', className)}>
           <BorderContainer
             greetingData={greetingData}
             selectedEvent={selectedEvent}

@@ -78,16 +78,21 @@ const FirebaseShareButton: React.FC<FirebaseShareButtonProps> = ({
       initial={{ y: 100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ type: "spring", stiffness: 200, damping: 20 }}
-      className={`${isMobile ? 'fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50' : 'relative'}`}
+      className={`${
+        isMobile
+          ? 'fixed bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-background via-background to-background/95 backdrop-blur-xl border-t border-border/50'
+          : 'relative'
+      }`} 
+      style={isMobile ? { position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 50 } : {}}
     >
-      <div className={`max-w-3xl mx-auto px-4 ${isMobile ? 'my-5' : 'my-2'}`}>
+      <div className={`max-w-3xl mx-auto px-4 ${isMobile ? 'py-3' : 'my-2'}`}>
         <motion.div
           className="relative"
           whileHover={{ scale: 1.01 }}
           transition={{ type: "spring", stiffness: 400 }}
         >
           {/* Animated background gradient */}
-          <motion.div
+          <motion.div 
             className="absolute inset-0 rounded-2xl bg-gradient-to-r from-pink-500/20 via-violet-500/20 to-primary/20 blur-xl"
             animate={{
               opacity: [0.3, 0.6, 0.3],
@@ -100,7 +105,7 @@ const FirebaseShareButton: React.FC<FirebaseShareButtonProps> = ({
             }}
           />
 
-          <div className="relative flex flex-col sm:flex-row items-center justify-center gap-3 p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-primary/30 hover:border-primary/50 shadow-2xl">
+          <div className="relative flex items-center justify-center gap-3 p-3 bg-card/80 backdrop-blur-xl rounded-2xl border border-primary/30 hover:border-primary/50 shadow-2xl">
             {/* Save & Share Button */}
             <Button
               variant={variant}
@@ -160,9 +165,7 @@ const FirebaseShareButton: React.FC<FirebaseShareButtonProps> = ({
           className="text-center text-xs sm:text-sm text-muted-foreground mt-2"
         >
           Save your greeting and share it with the world
-          <span className="text-lg ml-1 animate-pulse">
-            🎉
-          </span>
+          <span className="text-lg ml-1 animate-pulse">🎉</span>
         </motion.p>
       </div>
     </motion.div>

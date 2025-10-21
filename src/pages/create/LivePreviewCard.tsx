@@ -78,18 +78,20 @@ const LivePreviewCard: React.FC<LivePreviewCardProps> = ({
       <CardContent>
         {formData.eventType ? ( 
           <div className="space-y-1">
-            <Preview 
-              greetingData={formData} 
-              selectedEvent={selectedEvent} 
-            />
+            <div className="flex justify-center mb-36 sm:mb-4">
+              <Preview 
+                greetingData={formData} 
+                selectedEvent={selectedEvent} 
+              />
+            </div>
 
-            <div className="flex justify-center mb-2">
+           {/*  <div className="flex justify-center mb-2">
               <FirebaseShareButton
                 greetingData={formData}
                 selectedEvent={selectedEvent}
                 onClearAutoSave={onClearAutoSave}
               />
-            </div>
+            </div> */}
 
             {/* Auto-playing audio  */}
             <AudioAutoPlay 

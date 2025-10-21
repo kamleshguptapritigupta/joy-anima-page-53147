@@ -14,7 +14,8 @@ import BeautifulGreetingsText from '../components/landingPage/BeautifulGreetings
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Home } from "lucide-react";
+import FirebaseShareButton from '@/components/share/GenerateShareLink';
+
 
 const CreatePage: React.FC = ({ onClick }: { onClick?: () => void }) => {
   const {
@@ -184,6 +185,14 @@ const CreatePage: React.FC = ({ onClick }: { onClick?: () => void }) => {
             />
           </div>
         </div>
+           <div className="flex justify-center mb-2">
+              <FirebaseShareButton
+                greetingData={formData}
+                selectedEvent={selectedEvent}
+                onClearAutoSave={onClearAutoSave}
+              />
+            </div>
+
       </div>
     </div>
   );
