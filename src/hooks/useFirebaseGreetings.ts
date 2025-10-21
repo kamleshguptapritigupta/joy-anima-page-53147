@@ -384,6 +384,42 @@ export function useFirebaseGreetings() {
     }
   }, []);
 
+  // Update greeting with new sender name - always creates new greeting
+  const updateGreetingSenderName = useCallback(async (oldSlug: string, newSenderName: string, eventName: string, receiverName: string) => {
+    try {
+      setIsLoading(true);
+      
+      // Load the existing greeting
+      const greeting = await loadGreeting(oldSlug);
+      if (!greeting) {
+        throw new Error('Greeting not found');
+      }
+
+      // Generate new slug with the new sender name
+      const newSlug = generateSlug(newSenderName, receiverName, eventName);
+      
+      // Always create a new document with the new sender name
+      const greetingsRef = collection(db, 'greetings');
+      const newDocRef = doc(greetingsRef, newSlug);
+      
+      // Create new document with updated sender name and all existing data
+      await setDoc(newDocRef, {
+        ...greeting,
+        senderName: newSenderName,
+        slug: newSlug,
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp()
+      });
+      
+      return newSlug;
+    } catch (error) {
+      console.error('Error creating new greeting with sender name:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  }, [loadGreeting]);
+
   return {
     isLoading,
     isSaving,
@@ -392,5 +428,6 @@ export function useFirebaseGreetings() {
     loadGreeting,
     getAITextSuggestions,
     getPublicGreetings,
+    updateGreetingSenderName,
   };
 }
