@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import ShareActions from '@/components/share/ShareActions';
+import { useFirebaseGreetings } from '@/hooks/useFirebaseGreetings';
 import type { GreetingFormData } from '@/types/greeting';
 
 interface ShareNameInputProps {
@@ -14,12 +15,15 @@ interface ShareNameInputProps {
 
 const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingSlug }) => {
   const [senderName, setSenderName] = useState('');
-  const [receiverName, setReceiverName] = useState('');
+  const [showCustomize, setShowCustomize] = useState(false);
+  const [customSenderName, setCustomSenderName] = useState('');
+  const [customReceiverName, setCustomReceiverName] = useState('');
   const [animationVariant, setAnimationVariant] = useState(0);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [modifiedGreetingData, setModifiedGreetingData] = useState<GreetingFormData>(greetingData);
   const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
+  const { updateGreetingSenderName } = useFirebaseGreetings();
 
   // Random animation variant on mount
   useEffect(() => {
@@ -28,12 +32,11 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
 
   const handleShare = async () => {
     const hasSenderName = senderName.trim();
-    const hasReceiverName = receiverName.trim();
     
-    if (!hasSenderName && !hasReceiverName) {
+    if (!hasSenderName) {
       toast({
         title: "Name required",
-        description: "Please enter at least your name or receiver's name to share this greeting.",
+        description: "Please enter your name to share this greeting.",
         variant: "destructive"
       });
       return;
@@ -42,11 +45,10 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
     try {
       setIsCreating(true);
 
-      // Update greeting data with new names
+      // Update greeting data with new sender name
       const updatedData = {
         ...greetingData,
         senderName: hasSenderName ? senderName.trim() : greetingData.senderName,
-        receiverName: hasReceiverName ? receiverName.trim() : greetingData.receiverName,
       };
       setModifiedGreetingData(updatedData);
       
@@ -62,6 +64,50 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
       toast({
         title: "Error",
         description: "Failed to prepare greeting. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreating(false);
+    }
+  };
+
+  const handleCustomize = async () => {
+    const hasSenderName = customSenderName.trim();
+    const hasReceiverName = customReceiverName.trim();
+    
+    if (!hasSenderName && !hasReceiverName) {
+      toast({
+        title: "Name required",
+        description: "Please enter at least one name to customize.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+      
+      // Create new greeting with customized names
+      const newSlug = await updateGreetingSenderName(
+        greetingSlug || '',
+        hasSenderName ? customSenderName.trim() : undefined,
+        hasReceiverName ? customReceiverName.trim() : undefined
+      );
+      
+      if (newSlug) {
+        toast({
+          title: "Greeting customized!",
+          description: "A new greeting has been created with your names.",
+        });
+        
+        // Redirect to new greeting
+        window.location.href = `/view/${newSlug}`;
+      }
+    } catch (error) {
+      console.error('Error customizing greeting:', error);
+      toast({
+        title: "Error",
+        description: "Failed to customize greeting. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -131,48 +177,37 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
               {selectedIcon}
             </motion.div>
 
-            {/* Input Fields - Two inputs for sender and receiver */}
-            <div className="relative flex-1 flex gap-2">
-              <div className="relative flex-1">
-                <Input
-                  type="text"
-                  placeholder="Your name..."
-                  value={senderName}
-                  onChange={(e) => setSenderName(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={isCreating}
-                  className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
-                />
-                
-                {/* Animated underline effect */}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: senderName ? '100%' : 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
+            {/* Input Field - Single sender name input */}
+            <div className="relative flex-1">
+              <Input
+                type="text"
+                placeholder="Your name..."
+                value={senderName}
+                onChange={(e) => setSenderName(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={isCreating}
+                className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
+              />
               
-              <div className="relative flex-1">
-                <Input
-                  type="text"
-                  placeholder="Receiver's name..."
-                  value={receiverName}
-                  onChange={(e) => setReceiverName(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  disabled={isCreating}
-                  className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
-                />
-                
-                {/* Animated underline effect */}
-                <motion.div
-                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: receiverName ? '100%' : 0 }}
-                  transition={{ duration: 0.3 }}
-                />
-              </div>
+              {/* Animated underline effect */}
+              <motion.div
+                className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: senderName ? '100%' : 0 }}
+                transition={{ duration: 0.3 }}
+              />
             </div>
+
+            {/* Customize Button */}
+            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={() => setShowCustomize(true)}
+                variant="outline"
+                className="h-11 sm:h-12 px-4 rounded-xl text-sm sm:text-base"
+              >
+                Customize
+              </Button>
+            </motion.div>
 
             {/* Go Button */}
             <motion.div
@@ -181,7 +216,7 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
             >
               <Button
                 onClick={handleShare}
-                disabled={!senderName.trim() && !receiverName.trim() || isCreating}
+                disabled={!senderName.trim() || isCreating}
                 className="relative h-11 sm:h-12 px-4 sm:px-6 rounded-xl font-semibold text-sm sm:text-base overflow-hidden group disabled:opacity-50"
               >
                 {/* Animated shine effect */}
@@ -205,7 +240,7 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
                     <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   ) : (
                     <AnimatePresence mode="wait">
-                      {(senderName.trim() || receiverName.trim()) ? (
+                      {senderName.trim() ? (
                         <motion.span
                           key="send"
                           initial={{ scale: 0, rotate: -180 }}
@@ -269,12 +304,84 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingS
           transition={{ delay: 0.5 }}
           className="text-center text-xs sm:text-sm text-muted-foreground mt-2"
         >
-          Enter your name and/or receiver's name to personalize 
+          Enter your name to personalize • Click Customize to edit both names
           <span className="text-lg ml-1 animate-pulse">
             💖
           </span>
         </motion.p>
       </div>
+
+      {/* Customize Dialog */}
+      <AnimatePresence>
+        {showCustomize && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+            onClick={() => setShowCustomize(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-card border border-border rounded-2xl p-6 max-w-md w-full shadow-2xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3 className="text-xl font-bold mb-4 text-foreground">Customize Names</h3>
+              <p className="text-sm text-muted-foreground mb-6">
+                This will create a new greeting with your custom names
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Sender Name</label>
+                  <Input
+                    type="text"
+                    placeholder="Your name..."
+                    value={customSenderName}
+                    onChange={(e) => setCustomSenderName(e.target.value)}
+                    className="h-11 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl"
+                  />
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">Receiver Name</label>
+                  <Input
+                    type="text"
+                    placeholder="Receiver's name..."
+                    value={customReceiverName}
+                    onChange={(e) => setCustomReceiverName(e.target.value)}
+                    className="h-11 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl"
+                  />
+                </div>
+              </div>
+
+              <div className="flex gap-3 mt-6">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowCustomize(false)}
+                  className="flex-1"
+                  disabled={isCreating}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCustomize}
+                  className="flex-1"
+                  disabled={isCreating || (!customSenderName.trim() && !customReceiverName.trim())}
+                >
+                  {isCreating ? (
+                    <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    'Create New'
+                  )}
+                </Button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Share Dialog using ShareActions */}
       <div className="hidden">

@@ -13,6 +13,8 @@ import { useLanguageTranslation } from '@/components/language/useLanguageTransla
 import LandingPage from '@/components/landingPage/LandingPage'
 import Preview from '@/components/preview/Preview';
 import { useFirebaseGreetings } from '@/hooks/useFirebaseGreetings';
+import PWAInstallPrompt from '@/components/pwa/PWAInstallPrompt';
+import OnboardingTutorial from '@/components/onboarding/OnboardingTutorial';
 
 const Index = () => {
   const location = useLocation();
@@ -115,12 +117,12 @@ if (greetingData && (greetingData.eventType || greetingData.customEventName)) {
 
   // Show landing page if no greeting data
   return (
-  <LandingPage />
+    <>
+      <LandingPage />
+      <PWAInstallPrompt />
+      <OnboardingTutorial />
+    </>
   );
-
-
-
-
 };
 
 export default Index;
