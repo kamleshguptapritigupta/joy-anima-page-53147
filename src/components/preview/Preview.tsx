@@ -19,6 +19,7 @@ interface PreviewProps {
   mediaAnimation?: string;
   className?: string;
   showShareInput?: boolean;
+  greetingSlug?: string;
 }
 
 const Preview = ({
@@ -28,6 +29,7 @@ const Preview = ({
   mediaAnimation,
   className,
   showShareInput = false,
+  greetingSlug,
 }: PreviewProps) => {
   const { translate } = useLanguageTranslation();
 
@@ -66,7 +68,10 @@ const Preview = ({
 
       {/* Share Name Input - only show in shared view */}
       {showShareInput && (
-        <ShareNameInput greetingData={greetingData} />
+        <ShareNameInput 
+          greetingData={greetingData} 
+          greetingSlug={greetingSlug}
+        />
       )}
     </>
   );

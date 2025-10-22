@@ -9,13 +9,16 @@ import type { GreetingFormData } from '@/types/greeting';
 
 interface ShareNameInputProps {
   greetingData: GreetingFormData;
+  greetingSlug?: string;
 }
 
-const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
-  const [name, setName] = useState('');
+const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData, greetingSlug }) => {
+  const [senderName, setSenderName] = useState('');
+  const [receiverName, setReceiverName] = useState('');
   const [animationVariant, setAnimationVariant] = useState(0);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [modifiedGreetingData, setModifiedGreetingData] = useState<GreetingFormData>(greetingData);
+  const [isCreating, setIsCreating] = useState(false);
   const { toast } = useToast();
 
   // Random animation variant on mount
@@ -23,29 +26,51 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
     setAnimationVariant(Math.floor(Math.random() * 4));
   }, []);
 
-  const handleShare = () => {
-    if (!name.trim()) {
+  const handleShare = async () => {
+    const hasSenderName = senderName.trim();
+    const hasReceiverName = receiverName.trim();
+    
+    if (!hasSenderName && !hasReceiverName) {
       toast({
         title: "Name required",
-        description: "Please enter your name to share this greeting.",
+        description: "Please enter at least your name or receiver's name to share this greeting.",
         variant: "destructive"
       });
       return;
     }
 
-    // Update greeting data with new sender name
-    const updatedData = {
-      ...greetingData,
-      senderName: name.trim()
-    };
-    setModifiedGreetingData(updatedData);
-    
-    // Open share dialog
-    setShareDialogOpen(true);
+    try {
+      setIsCreating(true);
+
+      // Update greeting data with new names
+      const updatedData = {
+        ...greetingData,
+        senderName: hasSenderName ? senderName.trim() : greetingData.senderName,
+        receiverName: hasReceiverName ? receiverName.trim() : greetingData.receiverName,
+      };
+      setModifiedGreetingData(updatedData);
+      
+      // Open share dialog with updated data
+      setShareDialogOpen(true);
+      
+      toast({
+        title: "Ready to share!",
+        description: "Your personalized greeting is ready.",
+      });
+    } catch (error) {
+      console.error('Error preparing greeting:', error);
+      toast({
+        title: "Error",
+        description: "Failed to prepare greeting. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !isCreating) {
       handleShare();
     }
   };
@@ -106,24 +131,47 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
               {selectedIcon}
             </motion.div>
 
-            {/* Input Field */}
-            <div className="relative flex-1">
-              <Input
-                type="text"
-                placeholder="Enter your name to share..."
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                onKeyPress={handleKeyPress}
-                className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
-              />
+            {/* Input Fields - Two inputs for sender and receiver */}
+            <div className="relative flex-1 flex gap-2">
+              <div className="relative flex-1">
+                <Input
+                  type="text"
+                  placeholder="Your name..."
+                  value={senderName}
+                  onChange={(e) => setSenderName(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={isCreating}
+                  className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
+                />
+                
+                {/* Animated underline effect */}
+                <motion.div
+                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: senderName ? '100%' : 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
               
-              {/* Animated underline effect */}
-              <motion.div
-                className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: name ? '100%' : 0 }}
-                transition={{ duration: 0.3 }}
-              />
+              <div className="relative flex-1">
+                <Input
+                  type="text"
+                  placeholder="Receiver's name..."
+                  value={receiverName}
+                  onChange={(e) => setReceiverName(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  disabled={isCreating}
+                  className="h-11 sm:h-12 pr-4 bg-background/60 border hover:border-primary/50 focus:border-primary/60 rounded-xl text-sm sm:text-base transition-all duration-300"
+                />
+                
+                {/* Animated underline effect */}
+                <motion.div
+                  className="absolute bottom-0 left-0 h-0.5 bg-gradient-to-r from-primary via-purple-500 to-pink-500 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: receiverName ? '100%' : 0 }}
+                  transition={{ duration: 0.3 }}
+                />
+              </div>
             </div>
 
             {/* Go Button */}
@@ -133,48 +181,54 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
             >
               <Button
                 onClick={handleShare}
-                disabled={!name.trim()}
+                disabled={!senderName.trim() && !receiverName.trim() || isCreating}
                 className="relative h-11 sm:h-12 px-4 sm:px-6 rounded-xl font-semibold text-sm sm:text-base overflow-hidden group disabled:opacity-50"
               >
                 {/* Animated shine effect */}
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
-                  animate={{
-                    x: ['-200%', '200%']
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    ease: "linear",
-                    repeatDelay: 2
-                  }}
-                />
+                {!isCreating && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent -skew-x-12"
+                    animate={{
+                      x: ['-200%', '200%']
+                    }}
+                    transition={{
+                      duration: 3,
+                      repeat: Infinity,
+                      ease: "linear",
+                      repeatDelay: 2
+                    }}
+                  />
+                )}
                 
                 <span className="relative flex items-center gap-2">
-                  <AnimatePresence mode="wait">
-                    {name.trim() ? (
-                      <motion.span
-                        key="send"
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0, rotate: 180 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <Send className="h-4 w-4" />
-                      </motion.span>
-                    ) : (
-                      <motion.span
-                        key="sparkle"
-                        initial={{ scale: 0, rotate: -180 }}
-                        animate={{ scale: 1, rotate: 0 }}
-                        exit={{ scale: 0, rotate: 180 }}
-                        transition={{ type: "spring", stiffness: 300 }}
-                      >
-                        <Sparkles className="h-4 w-4" />
-                      </motion.span>
-                    )}
-                  </AnimatePresence>
-                  <span className="">Go</span>
+                  {isCreating ? (
+                    <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <AnimatePresence mode="wait">
+                      {(senderName.trim() || receiverName.trim()) ? (
+                        <motion.span
+                          key="send"
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0, rotate: 180 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          <Send className="h-4 w-4" />
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="sparkle"
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          exit={{ scale: 0, rotate: 180 }}
+                          transition={{ type: "spring", stiffness: 300 }}
+                        >
+                          <Sparkles className="h-4 w-4" />
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  )}
+                  <span className="">{isCreating ? 'Creating...' : 'Go'}</span>
                 </span>
               </Button>
             </motion.div>
@@ -215,10 +269,10 @@ const ShareNameInput: React.FC<ShareNameInputProps> = ({ greetingData }) => {
           transition={{ delay: 0.5 }}
           className="text-center text-xs sm:text-sm text-muted-foreground mt-2"
         >
-          Share this greeting with others 
-          <span  className="text-lg ml-1 animate-pulse">
-                              💖
-                            </span>
+          Enter your name and/or receiver's name to personalize 
+          <span className="text-lg ml-1 animate-pulse">
+            💖
+          </span>
         </motion.p>
       </div>
 

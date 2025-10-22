@@ -157,9 +157,15 @@ const CustomEventSelector = ({
             <SelectTrigger className="bg-background/50 backdrop-blur-sm hover:bg-background/80 transition-colors dark:bg-background/30">
               <SelectValue placeholder="Choose an event type" />
             </SelectTrigger>
-            <SelectContent className="max-h-80 bg-background/95 backdrop-blur-md dark:bg-background/90">
+            <SelectContent className="max-h-80 bg-background/95 backdrop-blur-md dark:bg-background/90" onPointerDownOutside={(e) => {
+              // Prevent closing dropdown when clicking on search input
+              const target = e.target as HTMLElement;
+              if (target.closest('.search-input-wrapper')) {
+                e.preventDefault();
+              }
+            }}>
               {/* Search Box as First Element in Dropdown */}
-              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md p-2 border-b border-muted/80">
+              <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-md p-2 border-b border-muted/80 search-input-wrapper">
                 <div className="relative group">
                   <Search className="absolute z-20 left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground shadow-lg group-hover:text-primary transition-colors" />
                   <Input
@@ -174,6 +180,7 @@ const CustomEventSelector = ({
                     onKeyDown={(e) => e.stopPropagation()}
                     onPointerDown={(e) => e.stopPropagation()}
                     onMouseDown={(e) => e.stopPropagation()}
+                    onFocus={(e) => e.stopPropagation()}
                   />
                   {searchQuery && (
                     <Button

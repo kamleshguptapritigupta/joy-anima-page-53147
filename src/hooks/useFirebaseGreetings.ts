@@ -384,8 +384,13 @@ export function useFirebaseGreetings() {
     }
   }, []);
 
-  // Update greeting with new sender name - always creates new greeting
-  const updateGreetingSenderName = useCallback(async (oldSlug: string, newSenderName: string, eventName: string, receiverName: string) => {
+  // Update greeting with new sender/receiver name - always creates new greeting
+  const updateGreetingSenderName = useCallback(async (
+    oldSlug: string, 
+    newSenderName?: string, 
+    newReceiverName?: string, 
+    eventName?: string
+  ) => {
     try {
       setIsLoading(true);
       
@@ -395,25 +400,32 @@ export function useFirebaseGreetings() {
         throw new Error('Greeting not found');
       }
 
-      // Generate new slug with the new sender name
-      const newSlug = generateSlug(newSenderName, receiverName, eventName);
+      // Use new names or fallback to existing ones
+      const senderName = newSenderName || greeting.senderName;
+      const receiverName = newReceiverName || greeting.receiverName;
+      const event = eventName || greeting.eventType || 'greeting';
+
+      // Generate new slug with the updated names
+      const newSlug = generateSlug(senderName, receiverName, event);
       
-      // Always create a new document with the new sender name
+      // Always create a new document with the updated names
       const greetingsRef = collection(db, 'greetings');
       const newDocRef = doc(greetingsRef, newSlug);
       
-      // Create new document with updated sender name and all existing data
+      // Create new document with updated names and all existing data
       await setDoc(newDocRef, {
         ...greeting,
-        senderName: newSenderName,
+        senderName,
+        receiverName,
         slug: newSlug,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
       
+      console.log(`✅ Created new greeting with updated names: ${newSlug}`);
       return newSlug;
     } catch (error) {
-      console.error('Error creating new greeting with sender name:', error);
+      console.error('Error creating new greeting with updated names:', error);
       throw error;
     } finally {
       setIsLoading(false);
